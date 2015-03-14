@@ -14,7 +14,7 @@ program
     .command('render')
     .description('Render a string of text')
     .action(function(src, options) {
-        osmdown.render(src)
+        console.log( osmdown.render(src) )
     })
 
 // program
