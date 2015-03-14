@@ -10,6 +10,13 @@ program
         osmdown.parse(program)
     })
 
+program
+    .command('render')
+    .description('Render a string of text')
+    .action(function(src, options) {
+        osmdown.render(src)
+    })
+
 // program
     // .option('-l, --limit <n>', 'A limit for the number of desired results', parseInt, undefined)
     // .option('-f, --format <string>', 'The desired format of the output', String, 'txt')
