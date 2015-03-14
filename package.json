@@ -1,0 +1,27 @@
+{
+  "name": "osmdown",
+  "version": "1.0.0",
+  "description": "A markdown parser for OSM Markdown",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jenningsanderson/osmdown.git"
+  },
+  "keywords": [
+    "OpenStreetMap",
+    "OSM",
+    "Markdown"
+  ],
+  "bin": {
+    "osmdown": "bin/osmdown"
+  }
+  "author": "Jennings Anderson, Robert Soden",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jenningsanderson/osmdown/issues"
+  },
+  "homepage": "https://github.com/jenningsanderson/osmdown"
+}
