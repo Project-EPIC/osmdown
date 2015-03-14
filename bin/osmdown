@@ -4,44 +4,16 @@ var osmdown = require('../lib'),
     program = require('commander')
 
 program
-    .command('nope')
-    .description('Titles of Latest Changesets')
+    .command('parse')
+    .description('Simply parse a file, print back to STOUT')
     .action(function(src, options) {
-        osmFeed.get(program, osmFeed.titles)
+        osmdown.parse(program)
     })
 
-program
-    .command('summaries')
-    .description('Summaries of Latest Changesets')
-    .action(function(src, options) {
-        osmFeed.get(program, osmFeed.summaries)
-    })
-
-program
-    .command('users')
-    .description('List all users who contributed')
-    .action(function(src, options) {
-        osmFeed.get(program, osmFeed.users)
-    })
-
-program
-    .command('changesets')
-    .description('List all changesets')
-    .action(function(src, options) {
-       osmFeed.get(program, osmFeed.changesets)
-    })
-
- program
-    .command('raw')
-    .description('Return Raw API Results')
-    .action(function(src, options) {
-       osmFeed.get(program, osmFeed.raw)
-    })
-
-program
-    .option('-l, --limit <n>', 'A limit for the number of desired results', parseInt, undefined)
-    .option('-f, --format <string>', 'The desired format of the output', String, 'txt')
-    .option('-o, --outFile <path/to/file.ext>', 'A file to write the output, defaults to stdout', String)
-    .option('-b, --bboxPath <path/to/bbox.config>', 'The bounding box configuration file, defaults to ./bbox.config')
+// program
+    // .option('-l, --limit <n>', 'A limit for the number of desired results', parseInt, undefined)
+    // .option('-f, --format <string>', 'The desired format of the output', String, 'txt')
+    // .option('-o, --outFile <path/to/file.ext>', 'A file to write the output, defaults to stdout', String)
+    // .option('-b, --bboxPath <path/to/bbox.config>', 'The bounding box configuration file, defaults to ./bbox.config')
 
 program.parse(process.argv)
