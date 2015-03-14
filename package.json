@@ -2,9 +2,9 @@
   "name": "osmdown",
   "version": "1.0.0",
   "description": "A markdown parser for OSM Markdown",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
     "OSM",
     "Markdown"
   ],
+  "preferGlobal": "true",
   "bin": {
     "osmdown": "bin/osmdown"
   }
@@ -23,5 +24,9 @@
   "bugs": {
     "url": "https://github.com/jenningsanderson/osmdown/issues"
   },
-  "homepage": "https://github.com/jenningsanderson/osmdown"
+  "homepage": "https://github.com/jenningsanderson/osmdown",
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "should": "^5.0.0"
+  }
 }
