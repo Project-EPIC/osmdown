@@ -34,11 +34,8 @@ Bbox Questions:
 
 User Questions:
 - experienced_contributors
+- nodes edited per day
 
-temporal_network:
-  files: 'overlapping_changesets'
-  unit: 'year'
-  step: 4
 ---
 
 Sample OSMDOWN FILE
@@ -49,6 +46,8 @@ Sample OSMDOWN FILE
 ```
 var x = [0,1,2,3,4,5]
 ```
+
+{{osmdown.map(bounding_box)}}
 
 More markdown down here, this should be a paragraph.
 
@@ -63,4 +62,13 @@ var z = y*y
 
 That was an example of doing javascript in the code block, now I want to use that data here.
 
-Can I reference {{ z }}?
+Can I reference z = {{ z }}?
+
+##Totally cool -- it actually works, neat!
+
+```
+var users = osmdown.experienced_contributors() //This will know to load the appropriate JSON file
+osmviz.graph(users)
+```
+
+As you can see, the users
