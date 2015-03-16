@@ -28,5 +28,11 @@
   "devDependencies": {
     "mocha": "^2.1.0",
     "should": "^5.0.0"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.14",
+    "code-context": "^0.5.0",
+    "js-yaml": "^3.2.7",
+    "liquid-node": "^2.4.0"
   }
 }

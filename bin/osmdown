@@ -17,6 +17,14 @@ program
         console.log( osmdown.render(src) )
     })
 
+program
+    .command('build')
+    .description('Given an .osmdown file, actually write HTML')
+    .action(function(src, options) {
+      var site_data = osmdown.parse(src, options)
+      // console.log(site_data)
+      console.log(osmdown.render(site_data))
+    })
 // program
     // .option('-l, --limit <n>', 'A limit for the number of desired results', parseInt, undefined)
     // .option('-f, --format <string>', 'The desired format of the output', String, 'txt')

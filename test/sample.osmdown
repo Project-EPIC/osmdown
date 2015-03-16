@@ -1,0 +1,66 @@
+---
+#User Information
+title: 'Nic-Test'
+email: 'test_user@osm-history2.com'
+
+#Database Information
+pbf_file: 'spec/import/test_files/managua.osm.pbf'
+database: 'nic-test'
+
+#Analysis Window Information
+
+#Will need to allow for proper processing of this!
+start_date: '2010-01-01'
+end_date:   '2010-12-31'
+
+#Bounding Box:
+bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
+
+#Or:
+max_lon:
+min_lat:
+min_lon:
+max_lat:
+
+# Lower left, upper right #
+tags: none
+
+mongo_only: false
+
+write_directory: 'sample_projects/nic_test'
+
+Bbox Questions:
+- bbox_geojson_geometry
+
+User Questions:
+- experienced_contributors
+
+temporal_network:
+  files: 'overlapping_changesets'
+  unit: 'year'
+  step: 4
+---
+
+Sample OSMDOWN FILE
+===================
+
+#Yahoo, this is a test of what works and what doesn't work!
+
+```
+var x = [0,1,2,3,4,5]
+```
+
+More markdown down here, this should be a paragraph.
+
+> Here I'm going to quote something
+
+And here I'll say what that quote was about and who wrote it.
+
+```
+var y = x.length
+var z = y*y
+```
+
+That was an example of doing javascript in the code block, now I want to use that data here.
+
+Can I reference {{ z }}?
