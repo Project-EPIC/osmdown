@@ -8,24 +8,11 @@ pbf_file: 'spec/import/test_files/managua.osm.pbf'
 database: 'nic-test'
 
 #Analysis Window Information
-
-#Will need to allow for proper processing of this!
 start_date: '2010-01-01'
 end_date:   '2010-12-31'
 
 #Bounding Box:
 bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
-
-#Or:
-max_lon:
-min_lat:
-min_lon:
-max_lat:
-
-# Lower left, upper right #
-tags: none
-
-mongo_only: false
 
 write_directory: 'sample_projects/nic_test'
 
@@ -34,7 +21,7 @@ Bbox Questions:
 
 User Questions:
 - experienced_contributors
-- nodes edited per day
+- nodes_x_day
 
 ---
 
@@ -70,5 +57,3 @@ Can I reference z = {{ z }}?
 var users = osmdown.experienced_contributors() //This will know to load the appropriate JSON file
 osmviz.graph(users)
 ```
-
-As you can see, the users
