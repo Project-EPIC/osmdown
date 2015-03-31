@@ -33,6 +33,7 @@
     "bluebird": "^2.9.14",
     "code-context": "^0.5.0",
     "js-yaml": "^3.2.7",
-    "liquid-node": "^2.4.0"
+    "liquid-node": "^2.4.0",
+    "mustache": "^2.0.0"
   }
 }

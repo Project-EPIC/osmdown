@@ -19,16 +19,19 @@ program
 
 program
     .command('build')
-    .description('Given an .osmdown file, actually write HTML')
+    .description('Given an .osmdown file, write HTML')
     .action(function(src, options) {
       var site_data = osmdown.parse(src, options)
-      // console.log(site_data)
-      console.log(osmdown.render(site_data))
+      osmdown.build(site_data)
     })
-// program
-    // .option('-l, --limit <n>', 'A limit for the number of desired results', parseInt, undefined)
-    // .option('-f, --format <string>', 'The desired format of the output', String, 'txt')
-    // .option('-o, --outFile <path/to/file.ext>', 'A file to write the output, defaults to stdout', String)
-    // .option('-b, --bboxPath <path/to/bbox.config>', 'The bounding box configuration file, defaults to ./bbox.config')
+
+
+program
+    .version('0.0.1')
+    .option('-d, --destination <path>', 'A destination for the rendered HTML', String, false)
+
+    if (!process.argv.slice(2).length) {
+      program.outputHelp();
+    }
 
 program.parse(process.argv)
