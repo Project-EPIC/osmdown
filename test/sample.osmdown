@@ -14,7 +14,7 @@ end_date:   '2010-12-31'
 #Bounding Box:
 bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 
-write_directory: 'sample_projects/nic_test'
+write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/nic_test'
 
 Bbox Questions:
 - bbox_geojson_geometry
@@ -52,7 +52,9 @@ Can I reference z = {{ z }}?
 ##Totally cool -- it actually works, neat!
 
 ```
-//var users = osmdata.experienced_contributors() //This will know to load the appropriate JSON file
+var users = osmdata.experienced_contributors //This will know to load the appropriate JSON file
 var graph = osmviz.graph('this should be a graph here')
 ```
 {{ graph }}
+
+{{ users.length }}
