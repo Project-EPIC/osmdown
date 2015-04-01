@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 var osmdown = require('../lib'),
-    program = require('commander')
+    program = require('commander'),
+    fs = require('fs')
 
 program
     .command('parse')
@@ -14,7 +15,7 @@ program
     .command('render')
     .description('Render a string of text')
     .action(function(src, options) {
-        console.log( osmdown.render(src) )
+    console.log( osmdown.render(src) )
     })
 
 program
@@ -25,6 +26,15 @@ program
       osmdown.build(site_data)
     })
 
+program
+    .command('preview src')
+    .description('preview <src> rendered in a web browser')
+    .action(function(src, options) {
+        var site_data = osmdown.parse(src, options)
+        var rendered = osmdown.build(site_data)
+        var dest = src + '.html'
+        fs.writeFileSync(dest, rendered)
+    }) 
 
 program
     .version('0.0.1')
