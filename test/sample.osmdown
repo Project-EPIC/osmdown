@@ -54,7 +54,11 @@ Can I reference z = {{ z }}?
 ```
 var users = osmdata.experienced_contributors //This will know to load the appropriate JSON file
 var graph = osmviz.graph('this should be a graph here')
-```
-{{ graph }}
+var fs = require('fs')
+var data = fs.readFileSync('./test/ebird.geojson', 'utf-8')
+var options = {name: 'ebird'}
 
-{{ users.length }}
+var map = osmviz.map(data, options)
+```
+
+{{ map }}
