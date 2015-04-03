@@ -1,30 +1,26 @@
 ---
 #User Information
+
 title: 'Nic-Test'
 email: 'test_user@osm-history2.com'
 
 #Database Information
+
 pbf_file: 'spec/import/test_files/managua.osm.pbf'
 database: 'nic-test'
 
 #Analysis Window Information
+
 start_date: '2010-01-01'
 end_date:   '2010-12-31'
 
 #Bounding Box:
+
 bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 
 write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/nic_test'
 
-Bbox Questions:
-- bbox_geojson_geometry
-
-User Questions:
-- experienced_contributors
-- nodes_x_day
-
 ---
-
 Sample OSMDOWN FILE
 ===================
 
@@ -62,3 +58,4 @@ var map = osmviz.map(data, options)
 ```
 
 {{ map }}
+
