@@ -30,6 +30,10 @@ Sample OSMDOWN FILE
 var x = [0,1,2,3,4,5]
 ```
 
+This should be loading...
+
+{{ osmviz.block('summary') }}
+
 More markdown down here, this should be a paragraph.
 
 > Here I'm going to quote something
@@ -49,13 +53,10 @@ Can I reference z = {{ z }}?
 
 ```
 var users = osmdata.experienced_contributors //This will know to load the appropriate JSON file
-var graph = osmviz.graph('this should be a graph here')
-var fs = require('fs')
-var data = fs.readFileSync('./test/ebird.geojson', 'utf-8')
-var options = {name: 'ebird'}
 
-var map = osmviz.map(data, options)
+//var graph = osmviz.graph('this should be a graph here')
+//var fs = require('fs')
+//var data = fs.readFileSync('./test/ebird.geojson', 'utf-8')
+//var options = {name: 'ebird'}
+//var map = osmviz.map(data, options)
 ```
-
-{{ map }}
-
