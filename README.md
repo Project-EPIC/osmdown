@@ -20,4 +20,4 @@ An OSM Markdown Parser for EPIC-OSM
         -d, --destination <path>  A destination for the rendered HTML
 
 ###Example:
-    osmdown build ./test/sample.osmdown
+    osmdown preview ./test/sample.osmdown; open ./test/sample.osmdown.html
