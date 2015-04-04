@@ -18,16 +18,7 @@ end_date:   '2010-12-31'
 
 bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 
-<<<<<<< HEAD
-Bbox Questions:
-- bbox_geojson_geometry
-
-User Questions:
-- experienced_contributors
-- nodes_x_day
-=======
 write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/nic_test'
->>>>>>> 4ffbe7ababfbe04e79345acc52fae34528697b07
 
 ---
 Sample OSMDOWN FILE
@@ -61,13 +52,10 @@ Can I reference z = {{ z }}?
 ##Totally cool -- it actually works, neat!
 
 ```
-<<<<<<< HEAD
 var fs = require('fs')
 var data = fs.readFileSync('./test/ebird.geojson', 'utf-8')
 var options = {name: 'ebird'}
-=======
 var users = osmdata.experienced_contributors //This will know to load the appropriate JSON file
->>>>>>> 4ffbe7ababfbe04e79345acc52fae34528697b07
 
 //var graph = osmviz.graph('this should be a graph here')
 //var fs = require('fs')
