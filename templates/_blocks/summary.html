@@ -2,9 +2,109 @@
 
 <!-- Yes, we can use mustache templates! -->
 
-<div id="summary block">
-  <h2>Summary Statistics... will be styled better in the future</h2>
+<div id="summaryblock" class="block">
+  <h2>Summary Statistics Block</h2>
 
-  {{ gotme }}
+
+  <div id="cumulativechart">
+  </div>
+
+
+  <div id="summary_slider">
+  </div>
+
+  <script>
+  $(document).ready(function(){
+    //Date slider
+    $("#summary_slider").dateRangeSlider({
+      bounds:{
+        min: new Date(2010, 0, 1),
+        max: new Date(2015, 11, 31)
+      },
+      defaultValues:{
+        min: new Date(2012, 0, 1),
+        max: new Date(2012, 11, 31)}
+      }
+    ).bind("valuesChanged", function(e, data){
+          console.log("Something moved. min: " + data.values.min + " max: " + data.values.max);
+      });
+
+
+    //This is for the linechart
+    var margin = {top: 20, right: 20, bottom: 30, left: 50},
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+
+      //  var parseDate = d3.time.format("%a %b %d %Y %X GMT%Z (MDT)").parse;
+
+      //  var x = d3.time.scale()
+      //  .range([0, width]);
+
+  //  var y = d3.scale.linear()
+  //      .range([height, 0]);
+
+ //   var xAxis = d3.svg.axis()
+ //       .scale(x)
+ //       .orient("bottom");
+ //
+ //   var yAxis = d3.svg.axis()
+ //       .scale(y)
+ //       .orient("left");
+ //
+ //   var line = d3.svg.line()
+ //       .x(function(d) { return x(d.date); })
+ //       .y(function(d) { console.log(d.count); return y(d.count); });
+ //
+ //   var linechartgraphic = d3.select(destination)
+ //       .attr("width", width + margin.left + margin.right)
+ //       .attr("height", height + margin.top + margin.bottom)
+ //       .append("g")
+ //       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+ //
+ //   for_graph = {}
+ //   Object.keys(linechart[datatype]).forEach(function(sentiment_type){
+ //     for_graph[sentiment_type] = []
+ //     Object.keys(linechart.Sentiment[sentiment_type]).forEach(function(time){
+ //       for_graph[sentiment_type].push( {
+ //         date: parseDate(time),
+ //         count: linechart.Sentiment[sentiment_type][time] })
+ //     })
+ //   })
+ //
+ //   data = for_graph["Positive_Coping"]
+ //     // d3.tsv("data.tsv", function(error, data) {
+ //     //   data.forEach(function(d) {
+ //     //     d.date = parseDate(d.date);
+ //     //     d.close = +d.close;
+ //     //   });
+ //     //
+ //   x.domain(d3.extent(data, function(d) { return d.date; }));
+ //   y.domain(d3.extent(data, function(d) { return d.count; }));
+ //     //
+ //   linechartgraphic.append("g")
+ //       .attr("class", "x axis")
+ //       .attr("transform", "translate(0," + height + ")")
+ //       .call(xAxis);
+ //
+ //   linechartgraphic.append("g")
+ //       .attr("class", "y axis")
+ //       .call(yAxis)
+ //       .append("text")
+ //       .attr("transform", "rotate(-90)")
+ //       .attr("y", 6)
+ //       .attr("dy", ".71em")
+ //       .style("text-anchor", "end")
+ //       .text("Count");
+ //
+ //   linechartgraphic.append("path")
+ //       .datum(data)
+ //       .attr("class", "line")
+ //       .attr("d", line);
+ // }
+
+  });
+  </script>
+
+
 
 </div>

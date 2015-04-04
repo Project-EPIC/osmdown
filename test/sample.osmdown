@@ -17,7 +17,8 @@ end_date:   '2010-12-31'
 #Bounding Box:
 bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 
-write_directory: '/Users/robertsoden/www/osm-history/sample_projects/nic_test'
+
+write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/nic_test'
 
 ---
 
@@ -58,6 +59,15 @@ var options = {
 	name: 'ebird',
 	data: data
 }
+=======
+var options = {name: 'ebird'}
+var users = osmdata.experienced_contributors //This will know to load the appropriate JSON file
+
+//var graph = osmviz.graph('this should be a graph here')
+//var fs = require('fs')
+//var data = fs.readFileSync('./test/ebird.geojson', 'utf-8')
+//var options = {name: 'ebird'}
+//var map = osmviz.map(data, options)
 ```
 
 {{ osmviz.map('default',options)}}
