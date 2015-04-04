@@ -1,3 +1,33 @@
 .block{
   border: 4px dashed gray;
 }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+
+.left{
+  width: 48%;
+  height: 400px;
+  display: inline-block
+}
+
+.right{
+  height: 400px;
+  width: 48%;
+  display: inline-block;
+}

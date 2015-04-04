@@ -6,102 +6,142 @@
   <h2>Summary Statistics Block</h2>
 
 
-  <div id="cumulativechart">
+  <div id="summarymap" class="left">
   </div>
 
+  <svg id="cumulativechart" class="right">
+  </svg>
 
-  <div id="summary_slider">
+
+  <div id="summary_slider" style="width: 90%;">
   </div>
+
+  <script src="json/changesets_x_day.jsonp"></script>
 
   <script>
   $(document).ready(function(){
-    //Date slider
-    $("#summary_slider").dateRangeSlider({
-      bounds:{
-        min: new Date(2010, 0, 1),
-        max: new Date(2015, 11, 31)
-      },
-      defaultValues:{
-        min: new Date(2012, 0, 1),
-        max: new Date(2012, 11, 31)}
-      }
-    ).bind("valuesChanged", function(e, data){
-          console.log("Something moved. min: " + data.values.min + " max: " + data.values.max);
-      });
 
+    var first_entry = changesets_x_day[0]
+    var last_entry  = changesets_x_day[changesets_x_day.length-1]
+    var mid_point = Math.round((changesets_x_day.length/2))
+    var scale = Math.round(changesets_x_day.length/12)
+
+    //Change this to changesets_x_all
+
+    // console.log(changesets_x_day)
+    var all_changesets = []
+
+    changesets_x_day.forEach(function(bin){
+      if (bin.objects.length > 0){
+        bin.objects.forEach(function(changeset){
+          all_changesets.push( changeset )
+        })
+      }
+    })
 
     //This is for the linechart
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+      width = 900 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
 
-      //  var parseDate = d3.time.format("%a %b %d %Y %X GMT%Z (MDT)").parse;
+    var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S UTC").parse;
 
-      //  var x = d3.time.scale()
-      //  .range([0, width]);
+    var data = []
+    var count = 0
+    all_changesets.forEach(function(changeset) {
+      count++;
+      d = {}
+      d.date = parseDate(changeset.closed_at)
+      d.cumulativeCount = count
+      data.push(d)
+    });
 
-  //  var y = d3.scale.linear()
-  //      .range([height, 0]);
+    var x = d3.time.scale()
+      .range([0, width]);
 
- //   var xAxis = d3.svg.axis()
- //       .scale(x)
- //       .orient("bottom");
- //
- //   var yAxis = d3.svg.axis()
- //       .scale(y)
- //       .orient("left");
- //
- //   var line = d3.svg.line()
- //       .x(function(d) { return x(d.date); })
- //       .y(function(d) { console.log(d.count); return y(d.count); });
- //
- //   var linechartgraphic = d3.select(destination)
- //       .attr("width", width + margin.left + margin.right)
- //       .attr("height", height + margin.top + margin.bottom)
- //       .append("g")
- //       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
- //
- //   for_graph = {}
- //   Object.keys(linechart[datatype]).forEach(function(sentiment_type){
- //     for_graph[sentiment_type] = []
- //     Object.keys(linechart.Sentiment[sentiment_type]).forEach(function(time){
- //       for_graph[sentiment_type].push( {
- //         date: parseDate(time),
- //         count: linechart.Sentiment[sentiment_type][time] })
- //     })
- //   })
- //
- //   data = for_graph["Positive_Coping"]
- //     // d3.tsv("data.tsv", function(error, data) {
- //     //   data.forEach(function(d) {
- //     //     d.date = parseDate(d.date);
- //     //     d.close = +d.close;
- //     //   });
- //     //
- //   x.domain(d3.extent(data, function(d) { return d.date; }));
- //   y.domain(d3.extent(data, function(d) { return d.count; }));
- //     //
- //   linechartgraphic.append("g")
- //       .attr("class", "x axis")
- //       .attr("transform", "translate(0," + height + ")")
- //       .call(xAxis);
- //
- //   linechartgraphic.append("g")
- //       .attr("class", "y axis")
- //       .call(yAxis)
- //       .append("text")
- //       .attr("transform", "rotate(-90)")
- //       .attr("y", 6)
- //       .attr("dy", ".71em")
- //       .style("text-anchor", "end")
- //       .text("Count");
- //
- //   linechartgraphic.append("path")
- //       .datum(data)
- //       .attr("class", "line")
- //       .attr("d", line);
- // }
+    var y = d3.scale.linear()
+       .range([height, 0]);
 
+    var xAxis = d3.svg.axis()
+       .scale(x)
+       .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+       .scale(y)
+       .orient("left");
+
+    var line = d3.svg.line()
+        .x(function(d) { return x(d.date) })
+        .y(function(d) { return y(d.cumulativeCount) });
+
+    var linechartgraphic = d3.select("#cumulativechart")
+       .attr("width", width + margin.left + margin.right)
+       .attr("height", height + margin.top + margin.bottom)
+       .append("g")
+       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain(d3.extent(data, function(d) { return d.cumulativeCount; }));
+
+    // linechartgraphic.append("g")
+    //   .attr("class", "x axis")
+    //   .attr("transform", "translate(0," + height + ")")
+    //   .call(xAxis);
+
+    linechartgraphic.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Cumulative Changeset Count");
+
+    linechartgraphic.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+    //Date Slider & Selector for this Block
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+    $("#summary_slider").dateRangeSlider({
+      bounds:{
+        min: Date.parse(first_entry.start_date),
+        max: Date.parse(last_entry.end_date)
+      },
+      defaultValues:{
+        min: Date.parse(changesets_x_day[mid_point-scale].start_date),
+        max: Date.parse(changesets_x_day[mid_point+scale].end_date)
+      },
+      formatter:function(val){
+        var days = val.getDate(),
+            month = val.getMonth(),
+            year = val.getFullYear();
+        return months[month] + " " + days +", "+ year;
+      },
+      scales: [{
+        first: function(value){ return value; },
+        end: function(value) {return value; },
+        next: function(value){
+          var next = new Date(value);
+          return new Date(next.setMonth(value.getMonth() + 1));
+        },
+        label: function(value){
+          return months[value.getMonth()];
+        },
+        format: function(tickContainer, tickStart, tickEnd){
+          tickContainer.addClass("myCustomClass");
+        }
+      }]
+    }).bind("valuesChanged", function(e, data){
+      console.log("Something moved. min: " + data.values.min + " max: " + data.values.max);
+      x.domain([data.values.min, data.values.max])
+      // linechartgraphic.transition().duration(750)
+      //   .select(".x.axis").call(xAxis);
+      linechartgraphic.transition().duration(750)
+        .select(".line").attr("d", line);
+      });
   });
   </script>
 

@@ -1,7 +1,7 @@
 ---
 #User Information
 
-title: 'Nic-Test'
+title: 'Boulder 2013 - 2014'
 email: 'test_user@osm-history2.com'
 
 #Database Information
@@ -21,35 +21,10 @@ bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/nic_test'
 
 ---
-Sample OSMDOWN FILE
-===================
-
-#Yahoo, this is a test of what works and what doesn't work!
-
-```
-var x = [0,1,2,3,4,5]
-```
-
-This should be loading...
 
 {{ osmviz.block('summary') }}
 
-More markdown down here, this should be a paragraph.
-
-> Here I'm going to quote something
-
-And here I'll say what that quote was about and who wrote it.
-
-```
-var y = x.length
-var z = y*y
-```
-
-That was an example of doing javascript in the code block, now I want to use that data here.
-
-Can I reference z = {{ z }}?
-
-##Totally cool -- it actually works, neat!
+Above is the main summary code block
 
 ```
 var fs = require('fs')
