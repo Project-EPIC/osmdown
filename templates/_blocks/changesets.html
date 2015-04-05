@@ -1,0 +1,159 @@
+<!-- Changeset Block -->
+
+<!-- Yes, we can use mustache templates! -->
+<div id="changeset-block" class="block">
+  <h2>Changeset Statistics Block for {{ title }}</h2>
+  <h5 id="changesetCount"></h5>
+  <h5 id="userCount"></h5>
+
+
+  <ul id="user-list" class="overscroll">
+  </ul>
+
+  <div id="changesets-map">
+  </div>
+
+  <div id="user-changesets">
+    <h2 id="user-changesets-title"><em>select a user</em></h2>
+    <ul id="user-changesets-list" class="overscroll">
+    </ul>
+  </div>
+
+  <div id="changeset_slider" style="width: 90%; margin: 0 auto;">
+  </div>
+
+</div>
+
+<script src="json/changesets_x_day.jsonp"></script>
+
+
+<script>
+$(document).ready(function(){
+
+  //Load the changesets
+  var parseDate = d3.time.format("%Y-%m-%d %X %Z").parse;
+
+  var first_entry = changesets_x_day[0]
+  var last_entry  = changesets_x_day[changesets_x_day.length-1]
+  var mid_point = Math.round((changesets_x_day.length/2))
+  var scale = Math.round(changesets_x_day.length/12)
+
+  //Add the map!
+  var changesetMap = L.map('changesets-map').setView([51.505, -0.09], 13);
+
+  // add an OpenStreetMap tile layer
+  L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(changesetMap);
+
+  //Update the Changeset List
+  function showChangesetDetails(user, changesets){
+    $("#user-changesets-title").text(user)
+    var changesetList = $("#user-changesets-list")
+    changesetList.empty();
+    changesetsForMap = []
+    changesets.forEach(function(changeset){
+      changesetsForMap.push(changeset.geometry)
+      var li = $('<li/>')
+        .addClass('ui-menu-item')
+        .attr('role', 'menuitem')
+        .addClass('ui-all')
+        .addClass('changeset-details')
+        //TODO: Add a template in here for displaying these changesets
+        .html("<h5>"+changeset.comment+"</h5><p>"+changeset.created_at+"</p><p>"+changeset.tags.join(', ')+"</p>")
+        .appendTo(changesetList)
+        .bind("click", function(){
+          c = changeset.geometry.coordinates
+          point = new L.LatLng(c[1],c[0])
+          L.marker(point).addTo(changesetMap)
+          changesetMap.panTo(point);
+        });
+    })
+  }
+
+  function updateUserList(min, max){
+    var userList = $("#user-list")
+    users = {}
+    changesetCount = 0
+    changesets_x_day.forEach(function(bin){
+      if (bin.objects.length > 0){
+        if ( (Date.parse(bin.start_date) > min) && (Date.parse(bin.end_date) < max) ){
+          bin.objects.forEach(function(changeset){
+            if (users[changeset.user] == undefined){ users[changeset.user] = [] }
+            users[changeset.user].push(changeset)
+            changesetCount++;
+          })
+        }
+      }
+    })
+    //Update Simple Stats:
+    $("#changesetCount").text(changesetCount + " Changesets");
+    $("#userCount").text(Object.keys(users).length + " Users");
+
+    //Iterate over unique users
+    userList.empty();
+    var usersToSort = []
+    Object.keys(users).forEach(function(username){
+      usersToSort.push({name: username, count: users[username].length})
+    })
+    _.sortByOrder(usersToSort, 'count', false).forEach(function(user){
+      var li = $('<li/>')
+        .addClass('ui-menu-item')
+        .attr('role', 'menuitem')
+        .appendTo(userList);
+      var aaa = $('<a/>')
+        .addClass('ui-all')
+        .text( user.count+" "+user.name)
+        .appendTo(li)
+        .bind("click", function(){
+          showChangesetDetails(user.name, users[user.name])
+        });
+    });
+  }
+
+  updateUserList(Date.parse(first_entry.start_date), Date.parse(last_entry.end_date))
+
+
+
+
+
+
+
+
+  //Date Slider & Selector for this Block
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+  $("#changeset_slider").dateRangeSlider({
+    bounds:{
+      min: Date.parse(first_entry.start_date),
+      max: Date.parse(last_entry.end_date)
+    },
+    defaultValues:{
+      min: Date.parse(first_entry.start_date),
+      max: Date.parse(last_entry.end_date)
+    },
+    formatter:function(val){
+      var days = val.getDate(),
+          month = val.getMonth(),
+          year = val.getFullYear();
+      return months[month] + " " + days +", "+ year;
+    },
+    scales: [{
+      first: function(value){ return value; },
+      end: function(value) {return value; },
+      next: function(value){
+        var next = new Date(value);
+        return new Date(next.setMonth(value.getMonth() + 1));
+      },
+      label: function(value){
+        return months[value.getMonth()];
+      },
+      format: function(tickContainer, tickStart, tickEnd){
+        tickContainer.addClass("myCustomClass");
+      }
+    }]
+  }).bind("valuesChanged", function(e, data){
+    // console.log("Something moved. min: " + data.values.min + " max: " + data.values.max);
+    updateUserList(data.values.min, data.values.max)
+  });
+})
+</script>
