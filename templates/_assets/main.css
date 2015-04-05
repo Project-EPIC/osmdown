@@ -1,3 +1,12 @@
+pre {
+  display: none;
+}
+
+#CodeButton {
+  float: right;
+  margin: -40px 20px 0px 0px;
+}
+
 .block{
   border: 4px dashed gray;
 }

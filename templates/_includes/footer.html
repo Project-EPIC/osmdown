@@ -1,3 +1,18 @@
 <div id="footer" style="text-align: center; margin-top: 100px;">
   <h5> {{ copyright }} </h5>
 </div>
+  <script>
+    function toggleCode() {
+      var pres = document.getElementsByTagName('pre');
+      for (i = 0; i < pres.length; i++) {
+      	if (pres[i].style.display == 'none') {
+      		pres[i].style.display = 'block'
+      		document.getElementById('CodeButton').innerText = 'Hide Code'
+      	}
+      	else {
+      		pres[i].style.display = 'none'
+      		document.getElementById('CodeButton').innerText = 'Show Code'
+      	}
+      }
+    }
+  </script>

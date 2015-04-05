@@ -4,7 +4,9 @@
 	<body>
 
 	<h1> {{ title }} </h1>
-
+ 	<div>
+        <p><button id="CodeButton" onclick="toggleCode()">Show Code</button></p>
+    </div>
 	{{{ content }}}
 
 	</body>
