@@ -2,13 +2,12 @@
 
 <script>
 	function onEachFeature(feature, layer) {
-		console.log(feature.properties["{{ popupContent }}"])
 	    if (feature.properties && feature.properties["{{ popupContent }}"]) {
 	        layer.bindPopup(feature.properties["{{ popupContent }}"]);
 	    }
 	}
 
-	var map = L.map({{ name }});
+	var map = L.map('{{ name }}');
 	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: {{ maxzoom }}, id: '{{ id }}'}).addTo(map);
 	
 	var layer = L.geoJson( {{{ data }}} )

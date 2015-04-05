@@ -1,7 +1,7 @@
 <div id='{{ name }}' style='height:{{ height }}; width:{{ width }};'></div>
 
 <script>
-	var map = L.map({{ name }});
+	var map = L.map('{{ name }}');
 	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: {{ maxzoom }}, id: '{{ id }}'}).addTo(map);
 	var layer = L.geoJson( {{{ data }}} ).addTo(map);
 
