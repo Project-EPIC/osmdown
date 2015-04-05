@@ -19,6 +19,11 @@
   stroke-width: 1.5px;
 }
 
+.legend rect {
+  fill:white;
+  stroke:black;
+  opacity:0.8;}
+
 
 .left{
   width: 48%;

@@ -13,81 +13,62 @@
   </svg>
 
 
-  <div id="summary_slider" style="width: 90%;">
+  <div id="summary_slider" style="width: 90%; margin: 0 auto;">
   </div>
 
   <script src="json/changesets_x_day.jsonp"></script>
+  <script src="json/new_nodes_per_day.jsonp"></script>
+  <script src="json/new_ways_per_day.jsonp"></script>
 
   <script>
   $(document).ready(function(){
+
+    var parseDate = d3.time.format("%Y-%m-%d %X %Z").parse;
 
     var first_entry = changesets_x_day[0]
     var last_entry  = changesets_x_day[changesets_x_day.length-1]
     var mid_point = Math.round((changesets_x_day.length/2))
     var scale = Math.round(changesets_x_day.length/12)
 
-    //Change this to changesets_x_all
-
-    // console.log(changesets_x_day)
-    var all_changesets = []
-
-    changesets_x_day.forEach(function(bin){
-      if (bin.objects.length > 0){
-        bin.objects.forEach(function(changeset){
-          all_changesets.push( changeset )
-        })
-      }
-    })
-
     //This is for the linechart
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    var margin = {top: 20, right: 20, bottom: 30, left: 75},
       width = 900 - margin.left - margin.right,
       height = 400 - margin.top - margin.bottom;
 
-    var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S UTC").parse;
+    //Standard D3 Defaults
+    var x = d3.time.scale().range([0, width]);
+        y = d3.scale.linear().range([height, 0]);
+        xAxis = d3.svg.axis().scale(x).orient("bottom");
+        yAxis = d3.svg.axis().scale(y).orient("left");
 
-    var data = []
-    var count = 0
-    all_changesets.forEach(function(changeset) {
-      count++;
-      d = {}
-      d.date = parseDate(changeset.closed_at)
-      d.cumulativeCount = count
-      data.push(d)
-    });
+    //Node Line
+    var node_line = d3.svg.line()
+      .x(function(d) { return x(parseDate(d.start_date)) })
+      .y(function(d) { return y(d.cumulative_nodes)})
 
-    var x = d3.time.scale()
-      .range([0, width]);
+    //Way Line
+    var way_line  = d3.svg.line()
+      .x(function(d) { return x(parseDate(d.start_date)) })
+      .y(function(d) { return y(d.cumulative_ways)})
 
-    var y = d3.scale.linear()
-       .range([height, 0]);
-
-    var xAxis = d3.svg.axis()
-       .scale(x)
-       .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-       .scale(y)
-       .orient("left");
-
-    var line = d3.svg.line()
-        .x(function(d) { return x(d.date) })
-        .y(function(d) { return y(d.cumulativeCount) });
-
+    //Call the graphic
     var linechartgraphic = d3.select("#cumulativechart")
        .attr("width", width + margin.left + margin.right)
        .attr("height", height + margin.top + margin.bottom)
        .append("g")
        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain(d3.extent(data, function(d) { return d.cumulativeCount; }));
+    //Set the domain (Set the domain by nodes)
+    x.domain(d3.extent(new_nodes_per_day, function(d) { return parseDate(d.start_date); }));
+    y.domain(d3.extent(new_nodes_per_day, function(d) { return d.cumulative_nodes; }));
 
-    // linechartgraphic.append("g")
-    //   .attr("class", "x axis")
-    //   .attr("transform", "translate(0," + height + ")")
-    //   .call(xAxis);
+    //Add the x Axis
+    linechartgraphic.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
 
+    //Add the y Axis
     linechartgraphic.append("g")
       .attr("class", "y axis")
       .call(yAxis)
@@ -97,10 +78,27 @@
       .attr("dy", ".71em")
       .style("text-anchor", "end")
 
+    // linechartgraphic.append("path")
+    //   .datum(data)
+    //   .attr("class", "line")
+    //   .attr("d", line);
+
     linechartgraphic.append("path")
-      .datum(data)
+      .datum(new_nodes_per_day)
+      .attr("id", "node-line")
       .attr("class", "line")
-      .attr("d", line);
+      .attr("d", node_line);
+
+    linechartgraphic.append("path")
+        .datum(new_ways_per_day)
+        .attr("id", "way-line")
+        .attr("class", "line")
+        .attr("d", way_line);
+
+
+    //Finally, add the Legend:
+    //TODO
+
 
     //Date Slider & Selector for this Block
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
@@ -136,10 +134,12 @@
     }).bind("valuesChanged", function(e, data){
       console.log("Something moved. min: " + data.values.min + " max: " + data.values.max);
       x.domain([data.values.min, data.values.max])
-      // linechartgraphic.transition().duration(750)
-      //   .select(".x.axis").call(xAxis);
       linechartgraphic.transition().duration(750)
-        .select(".line").attr("d", line);
+        .select(".x.axis").call(xAxis);
+      linechartgraphic.transition().duration(750)
+        .select("#node-line").attr("d", node_line);
+      linechartgraphic.transition().duration(750)
+        .select("#way-line").attr("d", way_line);
       });
   });
   </script>

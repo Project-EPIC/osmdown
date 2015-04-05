@@ -27,9 +27,10 @@ write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/
 Above is the main summary code block
 
 ```
-
 var options = {
 	name: 'ebird',
 	data: 'blah blah'
 }
+
+var data = osmdata('notes_geojson')
 ```
