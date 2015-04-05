@@ -19,6 +19,7 @@ bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 
 
 write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/nic_test'
+baseurl: '../'
 
 ---
 

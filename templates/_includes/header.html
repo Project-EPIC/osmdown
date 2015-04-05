@@ -18,9 +18,16 @@
   <!-- Lodash-->
   <script src="{{ baseurl }}templates/_assets/js/lodash.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+  <!-- Front End Mustache -->
+  <script src="{{ baseurl }}templates/_assets/js/mustache.min.js"></script>
+
+  <!-- Custom Functions -->
+  <script src="{{ baseurl }}templates/_assets/js/osmdown-base.js"></script>
   <link rel="stylesheet" href="{{ baseurl }}templates/_assets/main.css">
 
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
   <title> {{ title }} </title>
 </head>
+{{{frontEndTemplates}}}

@@ -26,7 +26,6 @@
 
 <script src="json/changesets_x_day.jsonp"></script>
 
-
 <script>
 $(document).ready(function(){
 
@@ -37,6 +36,11 @@ $(document).ready(function(){
   var last_entry  = changesets_x_day[changesets_x_day.length-1]
   var mid_point = Math.round((changesets_x_day.length/2))
   var scale = Math.round(changesets_x_day.length/12)
+
+  //Parse the template:
+  var changesetViewTemplate = $('#changesetViewTemplate').html();
+  Mustache.parse(changesetViewTemplate);
+  console.log(changesetViewTemplate)
 
   //Add the map!
   var changesetMap = L.map('changesets-map').setView([51.505, -0.09], 13);
@@ -54,13 +58,13 @@ $(document).ready(function(){
     changesetsForMap = []
     changesets.forEach(function(changeset){
       changesetsForMap.push(changeset.geometry)
+      console.log(changeset)
       var li = $('<li/>')
         .addClass('ui-menu-item')
         .attr('role', 'menuitem')
         .addClass('ui-all')
         .addClass('changeset-details')
-        //TODO: Add a template in here for displaying these changesets
-        .html("<h5>"+changeset.comment+"</h5><p>"+changeset.created_at+"</p><p>"+changeset.tags.join(', ')+"</p>")
+        .html(Mustache.render(changesetViewTemplate, changeset))
         .appendTo(changesetList)
         .bind("click", function(){
           c = changeset.geometry.coordinates

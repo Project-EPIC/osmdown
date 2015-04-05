@@ -1,0 +1,4 @@
+<script id="changesetViewTemplate" type="x-tmpl-mustache">
+  <h5>{{comment}}</h5>
+  <p>{{created_at}}</p>
+</script>
