@@ -53,3 +53,48 @@ pre {
   width: 45%;
   display: inline-block;
 }
+
+
+/* Changeset Block */
+#user-list{
+  display: inline-block;
+  width: 150px;
+  padding: 0px 0px 0px 15px;
+  margin: 0px;
+  height: 450px;
+}
+
+#changesets-map{
+  display: inline-block;
+  width: 800px;
+  height: 450px;
+  border: 1px solid blue;
+}
+
+#user-list li{
+  margin: 0;
+}
+
+#user-list li a:hover{
+  background-color: yellow;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+#user-changesets{
+  display: inline-block;
+  width: 300px;
+  height: 450px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.overscroll{
+  height: 400px;
+  overflow: auto;
+  list-style-type: none;
+}
+
+.changeset-details{
+  border: 1px solid gray;
+}

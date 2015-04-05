@@ -31,5 +31,7 @@ var options = {
 	data: 'blah blah'
 }
 
-//var data = osmdata('notes_geojson')
+var data = osmdata('./test/json/median_changesets_per_mapper.json')
 ```
+
+{{ osmviz.block('changesets', {title: 'Boulder Sample'}) }}
