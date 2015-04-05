@@ -32,5 +32,5 @@ var options = {
 	data: 'blah blah'
 }
 
-var data = osmdata('notes_geojson')
+//var data = osmdata('notes_geojson')
 ```
