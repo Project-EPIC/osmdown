@@ -22,9 +22,8 @@ write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/
 
 ---
 
-{{ osmviz.block('summary') }}
+{{ osmviz.block('summary', {title: 'Boulder Sample'}) }}
 
-Above is the main summary code block
 
 ```
 var options = {

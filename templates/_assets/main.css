@@ -26,13 +26,21 @@
 
 
 .left{
-  width: 48%;
+  width: 40%;
   height: 400px;
   display: inline-block
 }
 
+.center{
+  display: inline-block;
+  width: 9%;
+  vertical-align: top;
+  margin-right: 1px;
+}
+
 .right{
+  padding-left: 50px;
   height: 400px;
-  width: 48%;
+  width: 45%;
   display: inline-block;
 }

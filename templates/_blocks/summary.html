@@ -1,12 +1,30 @@
 <!-- Summary Block -->
 
 <!-- Yes, we can use mustache templates! -->
-
 <div id="summaryblock" class="block">
-  <h2>Summary Statistics Block</h2>
+  <h2>Summary Statistics Block for {{ title }}</h2>
 
 
   <div id="summarymap" class="left">
+  </div>
+
+  <div id="Stats" class="center">
+    <table>
+      <tr>
+        <td><h3>Contributors</h3></td>
+        <td><h3 id="users">###</h3></td>
+      </tr><tr>
+        <tr>
+          <td><h3>Changesets</h3></td>
+          <td><h3 id="changesets">###</h3></td>
+      </tr><tr>
+        <td><h3>Miles of Roads</h3></td>
+        <td><h3 id="milesofroad">###</h3></td>
+      </tr><tr>
+        <td><h3># of Buildings</h3></td>
+        <td><h3 id="buildingcount">###</h3></td>
+      </tr>
+    </table>
   </div>
 
   <svg id="cumulativechart" class="right">
@@ -99,6 +117,25 @@
     //Finally, add the Legend:
     //TODO
 
+    function updateCenterStats(min, max){
+      users = []
+      changesetCount = 0
+      changesets_x_day.forEach(function(bin){
+        if (bin.objects.length > 0){
+          if ( (Date.parse(bin.start_date) > min) && (Date.parse(bin.end_date) < max) ){
+            bin.objects.forEach(function(changeset){
+              users.push(changeset.uid)
+              changesetCount+=1
+            })
+          }
+        }
+      })
+      $("#milesofroad").text('N/A')
+      $("#users").text(_.uniq(users).length)
+      $('#changesets').text(changesetCount)
+    }
+
+    updateCenterStats(Date.parse(first_entry.start_date), Date.parse(last_entry.end_date))
 
     //Date Slider & Selector for this Block
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
@@ -108,8 +145,8 @@
         max: Date.parse(last_entry.end_date)
       },
       defaultValues:{
-        min: Date.parse(changesets_x_day[mid_point-scale].start_date),
-        max: Date.parse(changesets_x_day[mid_point+scale].end_date)
+        min: Date.parse(first_entry.start_date),
+        max: Date.parse(last_entry.end_date)
       },
       formatter:function(val){
         var days = val.getDate(),
@@ -140,6 +177,7 @@
         .select("#node-line").attr("d", node_line);
       linechartgraphic.transition().duration(750)
         .select("#way-line").attr("d", way_line);
+      updateCenterStats(data.values.min, data.values.max)
       });
   });
   </script>
