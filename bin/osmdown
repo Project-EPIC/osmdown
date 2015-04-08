@@ -32,9 +32,9 @@ program
     .action(function(src, options) {
         var site_data = osmdown.parse(src, options)
         var rendered = osmdown.build(site_data)
-        var dest = src + '.html'
+        var dest = src.substring(0,src.indexOf('.')) + '.html'
         fs.writeFileSync(dest, rendered)
-    }) 
+    })
 
 program
     .version('0.0.1')
