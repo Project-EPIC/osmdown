@@ -26,6 +26,36 @@ Specific data files can be loaded:
 
 ```
 var data = osmdata('./examples/json/median_changesets_per_mapper.json')
+
+var notes_geo = osmdata('./examples/json/notes_geojson.json')
+var total_notes = osmdata('./examples/json/total_notes.json')
+var notes_open_time = osmdata('./examples/json/notes_open_time.json')
+
+var options = {
+	name:'notes',
+	data: notes_geo,
+	height: '500px',
+	width: '50%',
+	padding: '50',
+	popupFormat: 'comments',
+	popupContent: 'comments'
+}
+
+var notes_map = osmviz.map('popup',options)
 ```
+
+Notes Block
+===================
+
+{{ notes_map }}
+
+### Total Notes
+
+{{ total_notes['Total Notes'] }}
+
+### Average Time Open
+
+{{ notes_open_time['notes_open_time'] }}
+
 
 {{ osmviz.block('changesets', {title: 'Boulder Sample'}) }}

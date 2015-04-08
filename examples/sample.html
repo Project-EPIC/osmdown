@@ -259,7 +259,77 @@ var options = {foo: "bar"}
 
 <pre>
 var data = osmdata('./examples/json/median_changesets_per_mapper.json')
+
+var notes_geo = osmdata('./examples/json/notes_geojson.json')
+var total_notes = osmdata('./examples/json/total_notes.json')
+var notes_open_time = osmdata('./examples/json/notes_open_time.json')
+
+var options = {
+	name:'notes',
+	data: notes_geo,
+	height: '500px',
+	width: '50%',
+	padding: '50',
+	popupFormat: 'comments',
+	popupContent: 'comments'
+}
+
+var notes_map = osmviz.map('popup',options)
 </pre>
+<h1 id="notes-block">Notes Block</h1>
+<div id='notes' style='height:500px; width:50%;'></div>
+
+<script>
+    function popupFormatter (popupStyle,popupData) {
+        switch (popupStyle) {
+            case 'comments': 
+                console.log(popupData);
+                var HTML = '<strong>Comments</strong><br />';
+                for (i=0; i < popupData.comments.comment.length; i++) {
+                    if (popupData.comments.comment[i].date) {
+                        HTML += '<p><em>Date: </em>' + popupData.comments.comment[i].date; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].action) {
+                        HTML += '<p><em>Action: </em>' + popupData.comments.comment[i].action; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].user) {
+                        HTML += '<p><em>User: </em>' + popupData.comments.comment[i].user; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].text) {
+                        HTML += '<p><em>Text: </em>' + popupData.comments.comment[i].text; + '</p>'
+                    }
+                    HTML += '<hr />'
+                }
+                HTML += '<p><em>Link: </em> <a target="_blank" href="http://openstreetmap.org/note/' + popupData.id + '">www.openstreetmap.org/note/' + popupData.id + '</a></p>';
+                return HTML;
+            default:
+                return
+        }
+    }
+
+    function onEachFeature(feature, layer) {
+        if (feature.properties && feature.properties['comments']) {
+            layer.bindPopup(popupFormatter('comments',feature.properties),{ maxHeight:200 });
+        }
+    }
+
+    var map = L.map('notes');
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: 18, id: 'examples.map-i875mjb7'}).addTo(map);
+
+    var layer = L.geoJson( {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2407127,12.1343446]},"properties":{"id":"268299","url":"http://api.openstreetmap.org/api/0.6/notes/268299","comments":{"comment":[{"date":"2014-11-09 21:47:24 UTC","action":"opened","text":"Lst ","html":"<p>Lst </p>"},{"date":"2015-03-10 19:24:32 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Qué?","html":"<p>¿Qué?</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2444805,12.1370745]},"properties":{"id":"37855","url":"http://api.openstreetmap.org/api/0.6/notes/37855","comments":{"comment":[{"date":"2013-09-06 20:18:24 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"opened","text":"Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..","html":"<p>Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..</p>"},{"date":"2015-03-07 01:24:37 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.","html":"<p>It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.</p>"},{"date":"2015-03-10 17:49:01 UTC","action":"commented","text":"Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at & take care of those too.","html":"<p>Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at &amp; take care of those too.</p>"},{"date":"2015-03-10 18:03:17 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"commented","text":"-Jaakko (above)","html":"<p>-Jaakko (above)</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2390662,12.1005713]},"properties":{"id":"268300","url":"http://api.openstreetmap.org/api/0.6/notes/268300","comments":{"comment":[{"date":"2014-11-09 21:47:25 UTC","action":"opened","text":"#1","html":"<p>#1</p>"},{"date":"2015-03-07 01:45:58 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Qué?","html":"<p>¿Qué?</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2046313,12.1491162]},"properties":{"id":"100382","url":"http://api.openstreetmap.org/api/0.6/notes/100382","comments":{"comment":[{"date":"2014-01-12 17:46:59 UTC","uid":"94253","user":"xamanu","user_url":"http://www.openstreetmap.org/user/xamanu","action":"opened","text":"aire","html":"<p>aire</p>"},{"date":"2014-03-07 14:28:56 UTC","action":"commented","text":"productos del aire","html":"<p>productos del aire</p>"},{"date":"2014-03-11 23:10:10 UTC","uid":"1842655","user":"Alex Pérez","user_url":"http://www.openstreetmap.org/user/Alex%20P%C3%A9rez","action":"closed","text":"ok","html":"<p>ok</p>"},{"date":"2014-03-12 13:06:09 UTC","uid":"94253","user":"xamanu","user_url":"http://www.openstreetmap.org/user/xamanu","action":"reopened","text":null,"html":"<p></p>"},{"date":"2014-03-12 13:06:38 UTC","uid":"94253","user":"xamanu","user_url":"http://www.openstreetmap.org/user/xamanu","action":"commented","text":"Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?","html":"<p>Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?</p>"},{"date":"2015-03-07 01:28:19 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Es este http://www.openstreetmap.org/way/271666625?","html":"<p>¿Es este <a href=\"http://www.openstreetmap.org/way/271666625\" rel=\"nofollow\">http://www.openstreetmap.org/way/271666625</a>?</p>"}]}}}]} )
+
+    L.geoJson({"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2407127,12.1343446]},"properties":{"id":"268299","url":"http://api.openstreetmap.org/api/0.6/notes/268299","comments":{"comment":[{"date":"2014-11-09 21:47:24 UTC","action":"opened","text":"Lst ","html":"<p>Lst </p>"},{"date":"2015-03-10 19:24:32 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Qué?","html":"<p>¿Qué?</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2444805,12.1370745]},"properties":{"id":"37855","url":"http://api.openstreetmap.org/api/0.6/notes/37855","comments":{"comment":[{"date":"2013-09-06 20:18:24 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"opened","text":"Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..","html":"<p>Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..</p>"},{"date":"2015-03-07 01:24:37 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.","html":"<p>It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.</p>"},{"date":"2015-03-10 17:49:01 UTC","action":"commented","text":"Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at & take care of those too.","html":"<p>Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at &amp; take care of those too.</p>"},{"date":"2015-03-10 18:03:17 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"commented","text":"-Jaakko (above)","html":"<p>-Jaakko (above)</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2390662,12.1005713]},"properties":{"id":"268300","url":"http://api.openstreetmap.org/api/0.6/notes/268300","comments":{"comment":[{"date":"2014-11-09 21:47:25 UTC","action":"opened","text":"#1","html":"<p>#1</p>"},{"date":"2015-03-07 01:45:58 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Qué?","html":"<p>¿Qué?</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2046313,12.1491162]},"properties":{"id":"100382","url":"http://api.openstreetmap.org/api/0.6/notes/100382","comments":{"comment":[{"date":"2014-01-12 17:46:59 UTC","uid":"94253","user":"xamanu","user_url":"http://www.openstreetmap.org/user/xamanu","action":"opened","text":"aire","html":"<p>aire</p>"},{"date":"2014-03-07 14:28:56 UTC","action":"commented","text":"productos del aire","html":"<p>productos del aire</p>"},{"date":"2014-03-11 23:10:10 UTC","uid":"1842655","user":"Alex Pérez","user_url":"http://www.openstreetmap.org/user/Alex%20P%C3%A9rez","action":"closed","text":"ok","html":"<p>ok</p>"},{"date":"2014-03-12 13:06:09 UTC","uid":"94253","user":"xamanu","user_url":"http://www.openstreetmap.org/user/xamanu","action":"reopened","text":null,"html":"<p></p>"},{"date":"2014-03-12 13:06:38 UTC","uid":"94253","user":"xamanu","user_url":"http://www.openstreetmap.org/user/xamanu","action":"commented","text":"Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?","html":"<p>Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?</p>"},{"date":"2015-03-07 01:28:19 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Es este http://www.openstreetmap.org/way/271666625?","html":"<p>¿Es este <a href=\"http://www.openstreetmap.org/way/271666625\" rel=\"nofollow\">http://www.openstreetmap.org/way/271666625</a>?</p>"}]}}}]}, {
+        onEachFeature: onEachFeature
+    }).addTo(map);
+
+    var bounds = layer.getBounds();
+    map.fitBounds(bounds, { padding: [ 50,50] });
+</script>
+
+<h3 id="total-notes">Total Notes</h3>
+<p>12</p>
+<h3 id="average-time-open">Average Time Open</h3>
+<p>281 days, 4 hours</p>
 <!-- Changeset Block -->
 <!-- Yes, we can use mustache templates! -->
 <div id="changeset-block" class="block">
