@@ -1,38 +1,31 @@
 ---
-#User Information
-
 title: 'Boulder 2013 - 2014'
-email: 'test_user@osm-history2.com'
-
-#Database Information
-
-pbf_file: 'spec/import/test_files/managua.osm.pbf'
-database: 'nic-test'
+email: 'test_user@osmhistory.io'
 
 #Analysis Window Information
-
 start_date: '2010-01-01'
 end_date:   '2010-12-31'
 
 #Bounding Box:
 bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 
-
-write_directory: '/Users/jenningsanderson/documents/osm-history/sample_projects/nic_test'
 baseurl: '../'
-
 ---
+
+Sample OpenStreetMap Markdown Document
+======================================
 
 {{ osmviz.block('summary', {title: 'Boulder Sample'}) }}
 
+```
+//Code denoted by 3 ticks
+var options = {foo: "bar"}
+```
+
+Specific data files can be loaded:
 
 ```
-var options = {
-	name: 'ebird',
-	data: 'blah blah'
-}
-
-var data = osmdata('./test/json/median_changesets_per_mapper.json')
+var data = osmdata('./examples/json/median_changesets_per_mapper.json')
 ```
 
 {{ osmviz.block('changesets', {title: 'Boulder Sample'}) }}

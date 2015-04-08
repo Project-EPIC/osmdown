@@ -35,16 +35,16 @@ pre {
 
 
 .left{
-  width: 40%;
+  width: 30%;
   height: 400px;
-  display: inline-block
+  display: inline-block;
 }
 
 .center{
   display: inline-block;
   width: 9%;
   vertical-align: top;
-  margin-right: 1px;
+  margin: 0px 100px 0px 0px;
 }
 
 .right{
@@ -52,6 +52,10 @@ pre {
   height: 400px;
   width: 45%;
   display: inline-block;
+}
+
+#summarymap{
+  vertical-align: top;
 }
 
 
