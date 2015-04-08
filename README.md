@@ -1,10 +1,13 @@
-OSMDOWN
-=======
-Open Street Map Markdown
-------------------------
+OpenStreetMap Markdown
+======================
 An OSM Markdown Parser for EPIC-OSM
 
-##Command Line
+Given an osmdown file, this package will generate an easy to navigate and analyze html document.
+
+###Examples
+- [Example Rendering - Boulder, CO](http://osm.townsendjennings.com/example/)
+
+##Command Line Usage
     Usage: osmbuild [options] [command]
 
       Commands:
@@ -12,6 +15,7 @@ An OSM Markdown Parser for EPIC-OSM
         parse    Simply parse a file, print back to STOUT
         render   Render a string of text
         build    Given an .osmdown file, write HTML
+        preview  preview <src> rendered in a web browser
 
       Options:
 
@@ -24,7 +28,7 @@ An OSM Markdown Parser for EPIC-OSM
 
 
 ##Sample Document
-An osm-down document starts with YAML frontmatter denoted by '---'
+An ```osmdown``` document starts with YAML frontmatter denoted by ```---```
 
     ---
     title: My osmdown sample document
@@ -63,7 +67,7 @@ An osm-down document starts with YAML frontmatter denoted by '---'
 
 
 
-##Prefabricated Blocks
+##Available Prefabricated Blocks
 
 ####Summary Block
     {{osmviz.block('summary', options)}}
