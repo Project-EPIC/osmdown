@@ -56,9 +56,10 @@ $(document).ready(function(){
     var changesetList = $("#user-changesets-list")
     changesetList.empty();
     changesetsForMap = []
+    //This will be a layer of geojson objects
     changesets.forEach(function(changeset){
       changesetsForMap.push(changeset.geometry)
-      console.log(changeset)
+      // console.log(changeset)
       var li = $('<li/>')
         .addClass('ui-menu-item')
         .attr('role', 'menuitem')
@@ -67,10 +68,9 @@ $(document).ready(function(){
         .html(Mustache.render(changesetViewTemplate, changeset))
         .appendTo(changesetList)
         .bind("click", function(){
-          c = changeset.geometry.coordinates
-          point = new L.LatLng(c[1],c[0])
-          L.marker(point).addTo(changesetMap)
-          changesetMap.panTo(point);
+          var c = L.geoJson(changeset.geometry)
+          console.log(c)
+          c.addTo(changesetMap)
         });
     })
   }
