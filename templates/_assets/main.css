@@ -28,7 +28,8 @@ body{
 }
 
 h1.title{
-  margin-top: 0;
+  margin: 0;
+  display: inline-block;
 }
 
 pre {
@@ -40,7 +41,17 @@ pre {
   margin: -40px 20px 0px 0px;
 }
 
-#scrolling_nav{}
+#scrolling_nav{
+  list-style-type: none;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.scrolling-nav-item{
+  display: inline-block;
+  padding: 0px 20px;
+}
 
 .block{
   border: 1px dashed #A60007;
