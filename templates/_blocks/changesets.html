@@ -50,15 +50,20 @@ $(document).ready(function(){
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(changesetMap);
 
+  var c = null
+
   //Update the Changeset List
   function showChangesetDetails(user, changesets){
     $("#user-changesets-title").text(user)
     var changesetList = $("#user-changesets-list")
     changesetList.empty();
-    changesetsForMap = []
+    if (c != null){ changesetMap.removeLayer(c) }
+
+    var changesetsForMap = {type: "FeatureCollection", features:[]}
+
     //This will be a layer of geojson objects
     changesets.forEach(function(changeset){
-      changesetsForMap.push(changeset.geometry)
+      changesetsForMap.features.push(changeset.geometry)
       // console.log(changeset)
       var li = $('<li/>')
         .addClass('ui-menu-item')
@@ -68,11 +73,12 @@ $(document).ready(function(){
         .html(Mustache.render(changesetViewTemplate, changeset))
         .appendTo(changesetList)
         .bind("click", function(){
-          var c = L.geoJson(changeset.geometry)
-          console.log(c)
-          c.addTo(changesetMap)
+          console.log(changeset.geometry)
         });
     })
+    c = L.geoJson(changesetsForMap)
+    c.addTo(changesetMap)
+    changesetMap.fitBounds(c.getBounds());
   }
 
   function updateUserList(min, max){
