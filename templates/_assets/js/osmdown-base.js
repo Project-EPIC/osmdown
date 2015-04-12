@@ -9,8 +9,6 @@ $(document).ready(function(){
   var all_headings = $("h1");
   var scrolling_list = $("#scrolling_nav");
 
-  // console.log(all_headings)
-
   all_headings.each(function(idx, heading){
     if (idx > 1){
       elem = all_headings[idx]

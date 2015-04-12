@@ -38,7 +38,7 @@ pre {
 
 #CodeButton {
   float: right;
-  margin: -40px 20px 0px 0px;
+  margin: -20px 20px 0px 0px;
 }
 
 #scrolling_nav{
@@ -51,6 +51,12 @@ pre {
 .scrolling-nav-item{
   display: inline-block;
   padding: 0px 20px;
+  font-size: 18px;
+}
+
+.scrolling-nav-item:hover{
+  cursor: pointer;
+  background-color: #D2B401;
 }
 
 .block{
