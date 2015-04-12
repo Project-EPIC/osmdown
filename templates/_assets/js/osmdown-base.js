@@ -3,6 +3,8 @@
 //Helper functions and formatters for all front end
 //
 
+var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
 //Lets add a scrolling header?
 $(document).ready(function(){
 

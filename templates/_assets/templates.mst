@@ -1,5 +1,13 @@
 <script id="changesetViewTemplate" type="x-tmpl-mustache">
   <h5>{{comment}}</h5>
-  <p>{{created_at}}</p>
-  <P>{{geometry}}</p>
+  <p>{{#formatDate}} {{created_at}} {{/formatDate}}</p>
+
+  {{#tags}}
+    {{#created_by}} source: {{created_by}}{{/created_by}}
+  {{/tags}}
+
+  {{^tags}}<b>No tags</b>{{/tags}}
+
+
+
 </script>

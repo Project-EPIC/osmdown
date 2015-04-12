@@ -49,8 +49,16 @@
 </head>
 <script id="changesetViewTemplate" type="x-tmpl-mustache">
   <h5>{{comment}}</h5>
-  <p>{{created_at}}</p>
-  <P>{{geometry}}</p>
+  <p>{{#formatDate}} {{created_at}} {{/formatDate}}</p>
+
+  {{#tags}}
+    {{#created_by}} source: {{created_by}}{{/created_by}}
+  {{/tags}}
+
+  {{^tags}}<b>No tags</b>{{/tags}}
+
+
+
 </script>
 
 
@@ -385,16 +393,28 @@ $(document).ready(function(){
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(changesetMap);
 
+  var c = null
+  var highlighted = null
+
   //Update the Changeset List
   function showChangesetDetails(user, changesets){
     $("#user-changesets-title").text(user)
     var changesetList = $("#user-changesets-list")
     changesetList.empty();
-    changesetsForMap = []
+    if (c != null){ changesetMap.removeLayer(c) }
+
+    var changesetsForMap = {type: "FeatureCollection", features:[]}
+
     //This will be a layer of geojson objects
     changesets.forEach(function(changeset){
-      changesetsForMap.push(changeset.geometry)
+      changesetsForMap.features.push({type: "Feature", geometry: changeset.geometry, properties: changeset})
       // console.log(changeset)
+      changeset.formatDate = function(){
+        return function(text, render) {
+          var time = new Date(render(text))
+          return time.toTimeString()+"<br>"+MONTHS[time.getMonth()] + " " + time.getDate() +", "+ time.getFullYear()
+        }
+      }
       var li = $('<li/>')
         .addClass('ui-menu-item')
         .attr('role', 'menuitem')
@@ -403,11 +423,26 @@ $(document).ready(function(){
         .html(Mustache.render(changesetViewTemplate, changeset))
         .appendTo(changesetList)
         .bind("click", function(){
-          var c = L.geoJson(changeset.geometry)
-          console.log(c)
-          c.addTo(changesetMap)
+          if (highlighted != null){ changesetMap.removeLayer(highlighted) }
+          highlighted = L.geoJson(changeset.geometry,{
+            style:{
+              "color": "#004070",
+              "fillColor" : "#A60007",
+              "weight": 5,
+              "opacity": 1
+            }
+          })
+          highlighted.addTo(changesetMap)
+          changesetMap.fitBounds(highlighted.getBounds());
         });
     })
+    c = L.geoJson(changesetsForMap, {
+     onEachFeature: function (feature, layer) {
+         layer.bindPopup(feature.properties.comment);
+     }
+    })
+    c.addTo(changesetMap)
+    changesetMap.fitBounds(c.getBounds());
   }
 
   function updateUserList(min, max){
