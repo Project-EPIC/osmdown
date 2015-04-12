@@ -40,7 +40,7 @@ $(document).ready(function(){
   //Parse the template:
   var changesetViewTemplate = $('#changesetViewTemplate').html();
   Mustache.parse(changesetViewTemplate);
-  console.log(changesetViewTemplate)
+  // console.log(changesetViewTemplate)
 
   //Add the map!
   var changesetMap = L.map('changesets-map').setView([51.505, -0.09], 13);

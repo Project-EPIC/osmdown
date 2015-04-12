@@ -1,3 +1,36 @@
+body{
+  text-align: center;
+  background-color: #AABD00;
+  padding: 0;
+}
+
+.wrapper{
+  width: 95%;
+  margin: 35px auto;
+  padding: 10px;
+  text-align: left;
+  border-left: 5px solid #A60007;
+  border-right: 5px solid #A60007;
+  background-color: #F6FAEF;
+}
+
+#scrolling_header{
+  position: fixed;
+  top: 0;
+  margin: 0 auto;
+  margin-left: -15px;
+  text-align: left;
+  border-left: 5px solid #A60007;
+  border-right: 5px solid #A60007;
+  z-index: 9999;
+  width: 95%;
+  background-color: #F6FAEF;
+}
+
+h1.title{
+  margin-top: 0;
+}
+
 pre {
   display: none;
 }
@@ -7,8 +40,10 @@ pre {
   margin: -40px 20px 0px 0px;
 }
 
+#scrolling_nav{}
+
 .block{
-  border: 4px dashed gray;
+  border: 1px dashed #A60007;
 }
 
 .axis path,

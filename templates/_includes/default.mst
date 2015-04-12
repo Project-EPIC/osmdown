@@ -3,14 +3,20 @@
 
 	<body>
 
-	<h1> {{ title }} </h1>
- 	<div>
-        <p><button id="CodeButton" onclick="toggleCode()">Show Code</button></p>
-    </div>
-	{{{ content }}}
+	<div class="main wrapper">
 
-	</body>
+		<div id="scrolling_header">
+			<h1 class="title"> {{ title }} </h1>
+			<ul id="scrolling_nav"></ul>
+			<p><button id="CodeButton" onclick="toggleCode()">Show Code</button></p>
+		</div>
 
-	{{{ foot }}}
+		{{{ content }}}
+
+		</body>
+
+		{{{ foot }}}
+
+	</div>
 
 </html>
