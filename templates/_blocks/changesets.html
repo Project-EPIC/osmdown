@@ -24,7 +24,7 @@
 
 </div>
 
-<script src="json/changesets_x_day.jsonp"></script>
+<script class="jsonp" src="json/changesets_x_day.jsonp"></script>
 
 <script>
 $(document).ready(function(){
@@ -43,7 +43,10 @@ $(document).ready(function(){
   // console.log(changesetViewTemplate)
 
   //Add the map!
-  var changesetMap = L.map('changesets-map').setView([51.505, -0.09], 13);
+  var changesetMap = L.map('changesets-map', {scrollWheelZoom: false}).setView([51.505, -0.09], 13);
+  changesetMap.on('focus', function() { changesetMap.scrollWheelZoom.enable(); });
+  // changesetMap.on('focusout', function() { changesetMap.scrollWheelZoom.disable(); });
+
 
   // add an OpenStreetMap tile layer
   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {

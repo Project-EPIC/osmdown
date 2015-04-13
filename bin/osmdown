@@ -8,14 +8,22 @@ program
     .command('parse')
     .description('Simply parse a file, print back to STOUT')
     .action(function(src, options) {
-        osmdown.parse(src, options)
+      osmdown.parse(src, options)
     })
 
 program
     .command('render')
     .description('Render a string of text')
     .action(function(src, options) {
-    console.log( osmdown.render(src) )
+      console.log( osmdown.render(src) )
+    })
+
+program
+    .command('compile')
+    .description('Given an .osmdown file, generate HTML')
+    .action(function(src, options) {
+      var site_data = osmdown.parse(src, options)
+      osmdown.build(site_data)
     })
 
 program
@@ -23,17 +31,35 @@ program
     .description('Given an .osmdown file, write HTML')
     .action(function(src, options) {
       var site_data = osmdown.parse(src, options)
-      osmdown.build(site_data)
+      var output_dir = './'
+      if (program.destination != false){
+        output_dir = program.destination
+        site_data['www'] = output_dir
+      }else if (site_data.www != undefined){
+        output_dir = site_data.www
+      }
+      console.log("Destination: " + output_dir)
+      var rendered = osmdown.build(site_data)
+      var dest = output_dir + "/index.html"
+      console.log("Writing Site to: "+dest)
+      fs.writeFileSync(dest, rendered)
+    })
+
+program
+    .command('jsonp')
+    .description('Given a json file, make it a jsonp file')
+    .action(function(src, options) {
+      osmdown.jsonp(src)
     })
 
 program
     .command('preview src')
     .description('preview <src> rendered in a web browser')
     .action(function(src, options) {
-        var site_data = osmdown.parse(src, options)
-        var rendered = osmdown.build(site_data)
-        var dest = src.substring(0,src.indexOf('.')) + '.html'
-        fs.writeFileSync(dest, rendered)
+      var site_data = osmdown.parse(src, options)
+      var rendered = osmdown.build(site_data)
+      var dest = src.substring(0,src.indexOf('.')) + '.html'
+      fs.writeFileSync(dest, rendered)
     })
 
 program

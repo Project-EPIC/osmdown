@@ -36,6 +36,12 @@ h1.title{
   display: inline-block;
 }
 
+h1.title:hover{
+  margin: 0;
+  display: inline-block;
+  cursor: pointer;
+}
+
 pre {
   display: none;
 }
@@ -64,7 +70,6 @@ pre {
 }
 
 .block{
-  border: 1px dashed #A60007;
 }
 
 .axis path,

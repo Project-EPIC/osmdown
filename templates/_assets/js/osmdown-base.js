@@ -8,6 +8,12 @@ var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "A
 //Lets add a scrolling header?
 $(document).ready(function(){
 
+  $('h1.title').click(function(){
+    $('html, body').animate({
+      scrollTop: 0
+    }, 500);
+  })
+
   var all_headings = $("h1");
   var scrolling_list = $("#scrolling_nav");
 

@@ -5,8 +5,7 @@
   <h1>Summary</h1>
 
 
-  <div id="summarymap" class="left">
-    <h2>TODO: Map Here!</h2>
+  <div id="summary-map" class="left">
   </div>
 
   <div id="Stats" class="center">
@@ -35,12 +34,24 @@
   <div id="summary_slider" style="width: 90%; margin: 0 auto;">
   </div>
 
-  <script src="json/changesets_x_day.jsonp"></script>
-  <script src="json/new_nodes_per_day.jsonp"></script>
-  <script src="json/new_ways_per_day.jsonp"></script>
+  <script class="jsonp" src="json/changesets_x_day.jsonp"></script>
+  <script class="jsonp" src="json/new_nodes_per_day.jsonp"></script>
+  <script class="jsonp" src="json/new_ways_per_day.jsonp"></script>
+  <script class="jsonp" src="json/bbox_geojson_geometry.jsonp"></script>
 
   <script>
   $(document).ready(function(){
+    //Make a summary map 
+    var summaryMap = L.map("summary-map", {scrollWheelZoom: false}).setView([51.505, -0.09], 13);
+    // add an OpenStreetMap tile layer
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(summaryMap);
+
+    //Add the bounding box
+    var bbox = L.geoJson(bbox_geojson_geometry)
+    bbox.addTo(summaryMap)
+    summaryMap.fitBounds(bbox.getBounds());
 
     var parseDate = d3.time.format("%Y-%m-%d %X %Z").parse;
 

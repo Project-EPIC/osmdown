@@ -10,6 +10,7 @@ end_date:   '2010-12-31'
 bbox: '-86.354212,12.084238,-86.133199,12.191113' #Expecting 4 parameters
 
 baseurl: '../'
+www: './examples'
 ---
 
 Sample OpenStreetMap Markdown Document
