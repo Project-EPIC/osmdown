@@ -4,7 +4,6 @@
 <div id="summaryblock" class="block">
   <h1>Summary</h1>
 
-
   <div id="summary-map" class="left">
   </div>
 
@@ -41,17 +40,16 @@
 
   <script>
   $(document).ready(function(){
-    //Make a summary map 
-    var summaryMap = L.map("summary-map", {scrollWheelZoom: false}).setView([51.505, -0.09], 13);
-    // add an OpenStreetMap tile layer
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(summaryMap);
-
+    //Make a summary map
+    var summaryMap = L.map("summary-map", {scrollWheelZoom: false});
     //Add the bounding box
     var bbox = L.geoJson(bbox_geojson_geometry)
     bbox.addTo(summaryMap)
     summaryMap.fitBounds(bbox.getBounds());
+    // add an OpenStreetMap tile layer
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(summaryMap);
 
     var parseDate = d3.time.format("%Y-%m-%d %X %Z").parse;
 
