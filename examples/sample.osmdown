@@ -42,13 +42,27 @@ var options = {
 	popupContent: 'comments'
 }
 
+var options2 = {
+	name:'notes2',
+	data: notes_geo,
+	height: '500px',
+	width: '50%',
+	padding: '50',
+	popupFormat: 'comments',
+	popupContent: 'comments'
+}
+
 var notes_map = osmviz.map('popup',options)
+
+var notes_map2 = osmviz.map('popup', options2)
 ```
 
 Notes Block
 ===================
 
 {{ notes_map }}
+
+{{ notes_map2 }}
 
 ### Total Notes
 
