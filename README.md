@@ -4,10 +4,10 @@ An OSM Markdown Parser for EPIC-OSM
 
 Given an osmdown file, this package will generate an easy to navigate and analyze html document.
 
-###Examples
+### Examples
 - [Example Rendering - Boulder, CO](http://osm.townsendjennings.com/example/)
 
-##Command Line Usage
+## Command Line Usage
     Usage: osmbuild [options] [command]
 
       Commands:
@@ -23,11 +23,11 @@ Given an osmdown file, this package will generate an easy to navigate and analyz
         -V, --version             output the version number
         -d, --destination <path>  A destination for the rendered HTML
 
-###Example Build:
+### Example Build:
     osmdown preview ./test/sample.osmdown; open ./test/sample.osmdown.html
 
 
-##Sample Document
+## Sample Document
 An ```osmdown``` document starts with YAML frontmatter denoted by ```---```
 
     ---
@@ -67,11 +67,11 @@ An ```osmdown``` document starts with YAML frontmatter denoted by ```---```
 
 
 
-##Available Prefabricated Blocks
+## Available Prefabricated Blocks
 
-####Summary Block
+#### Summary Block
     {{osmviz.block('summary', options)}}
 
 
-####Changeset Block
+#### Changeset Block
     {{osmviz.block('summary', options)}}
