@@ -35,18 +35,20 @@ var notes_open_time = osmdata('./examples/json/notes_open_time.json')
 var options = {
 	name:'notes',
 	data: notes_geo,
-	height: '500px',
-	width: '50%',
+	height: '400px',
+	width: '45%',
 	padding: '50',
 	popupFormat: 'comments',
 	popupContent: 'comments'
 }
 
+data2 = {type: "FeatureCollection", features: notes_geo.features.slice(0,10)}
+
 var options2 = {
 	name:'notes2',
-	data: notes_geo,
-	height: '500px',
-	width: '50%',
+	data: data2,
+	height: '400px',
+	width: '45%',
 	padding: '50',
 	popupFormat: 'comments',
 	popupContent: 'comments'

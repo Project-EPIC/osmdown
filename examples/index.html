@@ -1,0 +1,636 @@
+<html>
+	<head>
+  <meta charset="UTF-8">
+
+  <!--JQuery-->
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>  -->
+  <!--<script src="http://code.jquery.com/jquery-latest.js"></script>-->
+  <script src="..&#x2F;templates/_assets/js/jquery-2.1.3.min.js"></script>
+  <script src="..&#x2F;templates/_assets/js/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="..&#x2F;templates/_assets/css/jquery/jquery-ui.theme.min.css" />
+
+
+  <!--TimeSlider-->
+  <script src="..&#x2F;templates/_assets/js/jQDateRangeSlider-withRuler-min.js"></script>
+  <link rel="stylesheet" href="..&#x2F;templates/_assets/css/iThing-min.css" />
+  <link rel="stylesheet" href="..&#x2F;templates/_assets/css/classic-min.css" />
+
+  <!-- D3 -->
+  <!-- <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+  <script src="..&#x2F;templates/_assets/js/d3.min.js"></script>
+
+  <!-- Lodash-->
+  <script src="..&#x2F;templates/_assets/js/lodash.min.js"></script>
+
+  <!-- Front End Mustache -->
+  <script src="..&#x2F;templates/_assets/js/mustache.min.js"></script>
+
+  <!-- Custom Functions-->
+  <script src="..&#x2F;templates/_assets/js/osmdown-base.js"></script>
+
+  <!-- External Stylesheets-->
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="..&#x2F;templates/_assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="..&#x2F;templates/_assets/css/github-markdown.css">
+
+  <!-- Leaflet -->
+  <!-- <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+   -->
+  <link rel="stylesheet" href="..&#x2F;templates/_assets/leaflet-0.7.3/leaflet.css"/>
+  <script src="..&#x2F;templates/_assets/leaflet-0.7.3/leaflet.js"></script>
+
+
+  <!-- Custom Stylesheets (Always Last)-->
+  <link rel="stylesheet" href="..&#x2F;templates/_assets/main.css">
+
+  <title> Boulder 2013 - 2014 </title>
+</head>
+<script id="changesetViewTemplate" type="x-tmpl-mustache">
+  <h5>{{comment}}</h5>
+  <p>{{#formatDate}} {{created_at}} {{/formatDate}}</p>
+
+  {{#tags}}
+    {{#created_by}} source: {{created_by}}{{/created_by}}
+  {{/tags}}
+
+  {{^tags}}<b>No tags</b>{{/tags}}
+
+
+
+</script>
+
+
+
+	<body>
+
+	<div class="main wrapper">
+
+		<div id="scrolling_header">
+			<h1 class="title"> Boulder 2013 - 2014 </h1>
+			<ul id="scrolling_nav"></ul>
+			<p><button id="CodeButton" onclick="toggleCode()">Show Code</button></p>
+		</div>
+
+		<article class="markdown-body">
+<h1 id="sample-openstreetmap-markdown-document">Sample OpenStreetMap Markdown Document</h1>
+<!-- Summary Block -->
+<!-- Yes, we can use mustache templates! -->
+<div id="summaryblock" class="block">
+  <h1>Summary</h1>
+
+  <div id="summary-map" class="left">
+  </div>
+
+  <div id="Stats" class="center">
+    <table>
+      <tr>
+        <td><h3>Contributors</h3></td>
+        <td><h3 id="users">###</h3></td>
+      </tr><tr>
+        <tr>
+          <td><h3>Changesets</h3></td>
+          <td><h3 id="changesets">###</h3></td>
+      </tr><tr>
+        <td><h3>Miles of Roads</h3></td>
+        <td><h3 id="milesofroad">###</h3></td>
+      </tr><tr>
+        <td><h3># of Buildings</h3></td>
+        <td><h3 id="buildingcount">###</h3></td>
+      </tr>
+    </table>
+  </div>
+
+  <svg id="cumulativechart" class="right">
+  </svg>
+
+
+  <div id="summary_slider" style="width: 90%; margin: 0 auto;">
+  </div>
+
+  <script class="jsonp" src="json/changesets_x_day.jsonp"></script>
+  <script class="jsonp" src="json/new_nodes_per_day.jsonp"></script>
+  <script class="jsonp" src="json/new_ways_per_day.jsonp"></script>
+  <script class="jsonp" src="json/bbox_geojson_geometry.jsonp"></script>
+
+  <script>
+  $(document).ready(function(){
+    //Make a summary map
+    var summaryMap = L.map("summary-map", {scrollWheelZoom: false});
+    //Add the bounding box
+    var bbox = L.geoJson(bbox_geojson_geometry)
+    bbox.addTo(summaryMap)
+    summaryMap.fitBounds(bbox.getBounds());
+    // add an OpenStreetMap tile layer
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(summaryMap);
+
+    var parseDate = d3.time.format("%Y-%m-%d %X %Z").parse;
+
+    var first_entry = changesets_x_day[0]
+    var last_entry  = changesets_x_day[changesets_x_day.length-1]
+    var mid_point = Math.round((changesets_x_day.length/2))
+    var scale = Math.round(changesets_x_day.length/12)
+
+    //This is for the linechart
+    var margin = {top: 20, right: 20, bottom: 30, left: 75},
+      width = 900 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+
+    //Standard D3 Defaults
+    var x = d3.time.scale().range([0, width]);
+        y = d3.scale.linear().range([height, 0]);
+        xAxis = d3.svg.axis().scale(x).orient("bottom");
+        yAxis = d3.svg.axis().scale(y).orient("left");
+
+    //Node Line
+    var node_line = d3.svg.line()
+      .x(function(d) { return x(parseDate(d.start_date)) })
+      .y(function(d) { return y(d.cumulative_nodes)})
+
+    //Way Line
+    var way_line  = d3.svg.line()
+      .x(function(d) { return x(parseDate(d.start_date)) })
+      .y(function(d) { return y(d.cumulative_ways)})
+
+    //Call the graphic
+    var linechartgraphic = d3.select("#cumulativechart")
+       .attr("width", width + margin.left + margin.right)
+       .attr("height", height + margin.top + margin.bottom)
+       .append("g")
+       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    //Set the domain (Set the domain by nodes)
+    x.domain(d3.extent(new_nodes_per_day, function(d) { return parseDate(d.start_date); }));
+    y.domain(d3.extent(new_nodes_per_day, function(d) { return d.cumulative_nodes; }));
+
+    //Add the x Axis
+    linechartgraphic.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    //Add the y Axis
+    linechartgraphic.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+
+    // linechartgraphic.append("path")
+    //   .datum(data)
+    //   .attr("class", "line")
+    //   .attr("d", line);
+
+    linechartgraphic.append("path")
+      .datum(new_nodes_per_day)
+      .attr("id", "node-line")
+      .attr("class", "line")
+      .attr("d", node_line);
+
+    linechartgraphic.append("path")
+        .datum(new_ways_per_day)
+        .attr("id", "way-line")
+        .attr("class", "line")
+        .attr("d", way_line);
+
+
+    //Finally, add the Legend:
+    //TODO
+
+    function updateCenterStats(min, max){
+      users = []
+      changesetCount = 0
+      changesets_x_day.forEach(function(bin){
+        if (bin.objects.length > 0){
+          if ( (Date.parse(bin.start_date) > min) && (Date.parse(bin.end_date) < max) ){
+            bin.objects.forEach(function(changeset){
+              users.push(changeset.uid)
+              changesetCount+=1
+            })
+          }
+        }
+      })
+      $("#milesofroad").text('N/A')
+      $("#users").text(_.uniq(users).length)
+      $('#changesets').text(changesetCount)
+    }
+
+    updateCenterStats(Date.parse(first_entry.start_date), Date.parse(last_entry.end_date))
+
+    //Date Slider & Selector for this Block
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+    $("#summary_slider").dateRangeSlider({
+      bounds:{
+        min: Date.parse(first_entry.start_date),
+        max: Date.parse(last_entry.end_date)
+      },
+      defaultValues:{
+        min: Date.parse(first_entry.start_date),
+        max: Date.parse(last_entry.end_date)
+      },
+      formatter:function(val){
+        var days = val.getDate(),
+            month = val.getMonth(),
+            year = val.getFullYear();
+        return months[month] + " " + days +", "+ year;
+      },
+      scales: [{
+        first: function(value){ return value; },
+        end: function(value) {return value; },
+        next: function(value){
+          var next = new Date(value);
+          return new Date(next.setMonth(value.getMonth() + 1));
+        },
+        label: function(value){
+          return months[value.getMonth()];
+        },
+        format: function(tickContainer, tickStart, tickEnd){
+          tickContainer.addClass("myCustomClass");
+        }
+      }]
+    }).bind("valuesChanged", function(e, data){
+      console.log("Something moved. min: " + data.values.min + " max: " + data.values.max);
+      x.domain([data.values.min, data.values.max])
+      linechartgraphic.transition().duration(750)
+        .select(".x.axis").call(xAxis);
+      linechartgraphic.transition().duration(750)
+        .select("#node-line").attr("d", node_line);
+      linechartgraphic.transition().duration(750)
+        .select("#way-line").attr("d", way_line);
+      updateCenterStats(data.values.min, data.values.max)
+      });
+  });
+  </script>
+
+
+
+<p></div></p>
+
+<pre>
+//Code denoted by 3 ticks
+var options = {foo: "bar"}
+</pre>
+<p>Specific data files can be loaded:</p>
+
+<pre>
+var data = osmdata('./examples/json/median_changesets_per_mapper.json')
+
+var notes_geo = osmdata('./examples/json/notes_geojson.json')
+var total_notes = osmdata('./examples/json/total_notes.json')
+var notes_open_time = osmdata('./examples/json/notes_open_time.json')
+
+var options = {
+	name:'notes',
+	data: notes_geo,
+	height: '400px',
+	width: '45%',
+	padding: '50',
+	popupFormat: 'comments',
+	popupContent: 'comments'
+}
+
+data2 = {type: "FeatureCollection", features: notes_geo.features.slice(0,10)}
+
+var options2 = {
+	name:'notes2',
+	data: data2,
+	height: '400px',
+	width: '45%',
+	padding: '50',
+	popupFormat: 'comments',
+	popupContent: 'comments'
+}
+
+var notes_map = osmviz.map('popup',options)
+
+var notes_map2 = osmviz.map('popup', options2)
+</pre>
+<h1 id="notes-block">Notes Block</h1>
+<div id="mydiv"><div id='notes' style='height:400px; width:45%;'></div>
+
+<script>
+    function popupFormatter (popupStyle,popupData) {
+        switch (popupStyle) {
+            case 'comments':
+                // console.log(popupData);
+                var HTML = '<strong>Comments</strong><br />';
+                for (i=0; i < popupData.comments.comment.length; i++) {
+                    if (popupData.comments.comment[i].date) {
+                        HTML += '<p><em>Date: </em>' + popupData.comments.comment[i].date; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].action) {
+                        HTML += '<p><em>Action: </em>' + popupData.comments.comment[i].action; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].user) {
+                        HTML += '<p><em>User: </em>' + popupData.comments.comment[i].user; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].text) {
+                        HTML += '<p><em>Text: </em>' + popupData.comments.comment[i].text; + '</p>'
+                    }
+                    HTML += '<hr />'
+                }
+                HTML += '<p><em>Link: </em> <a target="_blank" href="http://openstreetmap.org/note/' + popupData.id + '">www.openstreetmap.org/note/' + popupData.id + '</a></p>';
+                return HTML;
+            default:
+                return
+        }
+    }
+
+    function onEachFeature(feature, layer) {
+        if (feature.properties && feature.properties['comments']) {
+            layer.bindPopup(popupFormatter('comments',feature.properties),{ maxHeight:200 });
+        }
+    }
+
+    var map = L.map('notes');
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: 18, id: 'examples.map-i875mjb7'}).addTo(map);
+
+    var layer = L.geoJson( "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2828471,12.1167327]},\"properties\":{\"id\":\"219125\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/219125\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2561834,12.1538256]},\"properties\":{\"id\":\"279821\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/279821\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2701609,12.1490626]},\"properties\":{\"id\":\"142162\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/142162\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.272433,12.1488473]},\"properties\":{\"id\":\"180048\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/180048\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2828471,12.1167327]},\"properties\":{\"id\":\"219125\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/219125\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2561834,12.1538256]},\"properties\":{\"id\":\"279821\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/279821\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2701609,12.1490626]},\"properties\":{\"id\":\"142162\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/142162\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.272433,12.1488473]},\"properties\":{\"id\":\"180048\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/180048\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2407127,12.1343446]},\"properties\":{\"id\":\"268299\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/268299\",\"comments\":{\"comment\":[{\"date\":\"2014-11-09 21:47:24 UTC\",\"action\":\"opened\",\"text\":\"Lst \",\"html\":\"<p>Lst </p>\"},{\"date\":\"2015-03-10 19:24:32 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"¿Qué?\",\"html\":\"<p>¿Qué?</p>\"}]}}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2444805,12.1370745]},\"properties\":{\"id\":\"37855\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/37855\",\"comments\":{\"comment\":[{\"date\":\"2013-09-06 20:18:24 UTC\",\"uid\":\"24440\",\"user\":\"jaakkoh\",\"user_url\":\"http://www.openstreetmap.org/user/jaakkoh\",\"action\":\"opened\",\"text\":\"Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..\",\"html\":\"<p>Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..</p>\"},{\"date\":\"2015-03-07 01:24:37 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.\",\"html\":\"<p>It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.</p>\"},{\"date\":\"2015-03-10 17:49:01 UTC\",\"action\":\"commented\",\"text\":\"Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \\\"orphan\\\" nodes (that are part of a bus route relation) -- hence the note here to look at & take care of those too.\",\"html\":\"<p>Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \\\"orphan\\\" nodes (that are part of a bus route relation) -- hence the note here to look at &amp; take care of those too.</p>\"},{\"date\":\"2015-03-10 18:03:17 UTC\",\"uid\":\"24440\",\"user\":\"jaakkoh\",\"user_url\":\"http://www.openstreetmap.org/user/jaakkoh\",\"action\":\"commented\",\"text\":\"-Jaakko (above)\",\"html\":\"<p>-Jaakko (above)</p>\"}]}}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2390662,12.1005713]},\"properties\":{\"id\":\"268300\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/268300\",\"comments\":{\"comment\":[{\"date\":\"2014-11-09 21:47:25 UTC\",\"action\":\"opened\",\"text\":\"#1\",\"html\":\"<p>#1</p>\"},{\"date\":\"2015-03-07 01:45:58 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"¿Qué?\",\"html\":\"<p>¿Qué?</p>\"}]}}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2046313,12.1491162]},\"properties\":{\"id\":\"100382\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/100382\",\"comments\":{\"comment\":[{\"date\":\"2014-01-12 17:46:59 UTC\",\"uid\":\"94253\",\"user\":\"xamanu\",\"user_url\":\"http://www.openstreetmap.org/user/xamanu\",\"action\":\"opened\",\"text\":\"aire\",\"html\":\"<p>aire</p>\"},{\"date\":\"2014-03-07 14:28:56 UTC\",\"action\":\"commented\",\"text\":\"productos del aire\",\"html\":\"<p>productos del aire</p>\"},{\"date\":\"2014-03-11 23:10:10 UTC\",\"uid\":\"1842655\",\"user\":\"Alex Pérez\",\"user_url\":\"http://www.openstreetmap.org/user/Alex%20P%C3%A9rez\",\"action\":\"closed\",\"text\":\"ok\",\"html\":\"<p>ok</p>\"},{\"date\":\"2014-03-12 13:06:09 UTC\",\"uid\":\"94253\",\"user\":\"xamanu\",\"user_url\":\"http://www.openstreetmap.org/user/xamanu\",\"action\":\"reopened\",\"text\":null,\"html\":\"<p></p>\"},{\"date\":\"2014-03-12 13:06:38 UTC\",\"uid\":\"94253\",\"user\":\"xamanu\",\"user_url\":\"http://www.openstreetmap.org/user/xamanu\",\"action\":\"commented\",\"text\":\"Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?\",\"html\":\"<p>Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?</p>\"},{\"date\":\"2015-03-07 01:28:19 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"¿Es este http://www.openstreetmap.org/way/271666625?\",\"html\":\"<p>¿Es este <a href=\\\"http://www.openstreetmap.org/way/271666625\\\" rel=\\\"nofollow\\\">http://www.openstreetmap.org/way/271666625</a>?</p>\"}]}}}]}" )
+
+    L.geoJson("{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2828471,12.1167327]},\"properties\":{\"id\":\"219125\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/219125\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2561834,12.1538256]},\"properties\":{\"id\":\"279821\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/279821\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2701609,12.1490626]},\"properties\":{\"id\":\"142162\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/142162\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.272433,12.1488473]},\"properties\":{\"id\":\"180048\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/180048\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2828471,12.1167327]},\"properties\":{\"id\":\"219125\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/219125\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2561834,12.1538256]},\"properties\":{\"id\":\"279821\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/279821\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2701609,12.1490626]},\"properties\":{\"id\":\"142162\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/142162\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.272433,12.1488473]},\"properties\":{\"id\":\"180048\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/180048\",\"comments\":null}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2407127,12.1343446]},\"properties\":{\"id\":\"268299\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/268299\",\"comments\":{\"comment\":[{\"date\":\"2014-11-09 21:47:24 UTC\",\"action\":\"opened\",\"text\":\"Lst \",\"html\":\"<p>Lst </p>\"},{\"date\":\"2015-03-10 19:24:32 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"¿Qué?\",\"html\":\"<p>¿Qué?</p>\"}]}}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2444805,12.1370745]},\"properties\":{\"id\":\"37855\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/37855\",\"comments\":{\"comment\":[{\"date\":\"2013-09-06 20:18:24 UTC\",\"uid\":\"24440\",\"user\":\"jaakkoh\",\"user_url\":\"http://www.openstreetmap.org/user/jaakkoh\",\"action\":\"opened\",\"text\":\"Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..\",\"html\":\"<p>Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..</p>\"},{\"date\":\"2015-03-07 01:24:37 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.\",\"html\":\"<p>It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.</p>\"},{\"date\":\"2015-03-10 17:49:01 UTC\",\"action\":\"commented\",\"text\":\"Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \\\"orphan\\\" nodes (that are part of a bus route relation) -- hence the note here to look at & take care of those too.\",\"html\":\"<p>Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \\\"orphan\\\" nodes (that are part of a bus route relation) -- hence the note here to look at &amp; take care of those too.</p>\"},{\"date\":\"2015-03-10 18:03:17 UTC\",\"uid\":\"24440\",\"user\":\"jaakkoh\",\"user_url\":\"http://www.openstreetmap.org/user/jaakkoh\",\"action\":\"commented\",\"text\":\"-Jaakko (above)\",\"html\":\"<p>-Jaakko (above)</p>\"}]}}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2390662,12.1005713]},\"properties\":{\"id\":\"268300\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/268300\",\"comments\":{\"comment\":[{\"date\":\"2014-11-09 21:47:25 UTC\",\"action\":\"opened\",\"text\":\"#1\",\"html\":\"<p>#1</p>\"},{\"date\":\"2015-03-07 01:45:58 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"¿Qué?\",\"html\":\"<p>¿Qué?</p>\"}]}}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-86.2046313,12.1491162]},\"properties\":{\"id\":\"100382\",\"url\":\"http://api.openstreetmap.org/api/0.6/notes/100382\",\"comments\":{\"comment\":[{\"date\":\"2014-01-12 17:46:59 UTC\",\"uid\":\"94253\",\"user\":\"xamanu\",\"user_url\":\"http://www.openstreetmap.org/user/xamanu\",\"action\":\"opened\",\"text\":\"aire\",\"html\":\"<p>aire</p>\"},{\"date\":\"2014-03-07 14:28:56 UTC\",\"action\":\"commented\",\"text\":\"productos del aire\",\"html\":\"<p>productos del aire</p>\"},{\"date\":\"2014-03-11 23:10:10 UTC\",\"uid\":\"1842655\",\"user\":\"Alex Pérez\",\"user_url\":\"http://www.openstreetmap.org/user/Alex%20P%C3%A9rez\",\"action\":\"closed\",\"text\":\"ok\",\"html\":\"<p>ok</p>\"},{\"date\":\"2014-03-12 13:06:09 UTC\",\"uid\":\"94253\",\"user\":\"xamanu\",\"user_url\":\"http://www.openstreetmap.org/user/xamanu\",\"action\":\"reopened\",\"text\":null,\"html\":\"<p></p>\"},{\"date\":\"2014-03-12 13:06:38 UTC\",\"uid\":\"94253\",\"user\":\"xamanu\",\"user_url\":\"http://www.openstreetmap.org/user/xamanu\",\"action\":\"commented\",\"text\":\"Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?\",\"html\":\"<p>Productos del aire, pero que es? Le falta la etiqueta.... Una tienda?</p>\"},{\"date\":\"2015-03-07 01:28:19 UTC\",\"uid\":\"1299518\",\"user\":\"mayorgatellez\",\"user_url\":\"http://www.openstreetmap.org/user/mayorgatellez\",\"action\":\"commented\",\"text\":\"¿Es este http://www.openstreetmap.org/way/271666625?\",\"html\":\"<p>¿Es este <a href=\\\"http://www.openstreetmap.org/way/271666625\\\" rel=\\\"nofollow\\\">http://www.openstreetmap.org/way/271666625</a>?</p>\"}]}}}]}", {
+        onEachFeature: onEachFeature
+    }).addTo(map);
+
+    var bounds = layer.getBounds();
+    map.fitBounds(bounds, { padding: [ 50,50] });
+</script>
+</div>
+
+<div id='notes2' style='height:400px; width:45%;'></div>
+
+<script>
+    function popupFormatter (popupStyle,popupData) {
+        switch (popupStyle) {
+            case 'comments':
+                // console.log(popupData);
+                var HTML = '<strong>Comments</strong><br />';
+                for (i=0; i < popupData.comments.comment.length; i++) {
+                    if (popupData.comments.comment[i].date) {
+                        HTML += '<p><em>Date: </em>' + popupData.comments.comment[i].date; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].action) {
+                        HTML += '<p><em>Action: </em>' + popupData.comments.comment[i].action; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].user) {
+                        HTML += '<p><em>User: </em>' + popupData.comments.comment[i].user; + '</p>'
+                    }
+                    if (popupData.comments.comment[i].text) {
+                        HTML += '<p><em>Text: </em>' + popupData.comments.comment[i].text; + '</p>'
+                    }
+                    HTML += '<hr />'
+                }
+                HTML += '<p><em>Link: </em> <a target="_blank" href="http://openstreetmap.org/note/' + popupData.id + '">www.openstreetmap.org/note/' + popupData.id + '</a></p>';
+                return HTML;
+            default:
+                return
+        }
+    }
+
+    function onEachFeature(feature, layer) {
+        if (feature.properties && feature.properties['comments']) {
+            layer.bindPopup(popupFormatter('comments',feature.properties),{ maxHeight:200 });
+        }
+    }
+
+    var map = L.map('notes2');
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: 18, id: 'examples.map-i875mjb7'}).addTo(map);
+
+    var layer = L.geoJson( {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2407127,12.1343446]},"properties":{"id":"268299","url":"http://api.openstreetmap.org/api/0.6/notes/268299","comments":{"comment":[{"date":"2014-11-09 21:47:24 UTC","action":"opened","text":"Lst ","html":"<p>Lst </p>"},{"date":"2015-03-10 19:24:32 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Qué?","html":"<p>¿Qué?</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2444805,12.1370745]},"properties":{"id":"37855","url":"http://api.openstreetmap.org/api/0.6/notes/37855","comments":{"comment":[{"date":"2013-09-06 20:18:24 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"opened","text":"Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..","html":"<p>Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..</p>"},{"date":"2015-03-07 01:24:37 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.","html":"<p>It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.</p>"},{"date":"2015-03-10 17:49:01 UTC","action":"commented","text":"Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at & take care of those too.","html":"<p>Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at &amp; take care of those too.</p>"},{"date":"2015-03-10 18:03:17 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"commented","text":"-Jaakko (above)","html":"<p>-Jaakko (above)</p>"}]}}}]} )
+
+    L.geoJson({"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2828471,12.1167327]},"properties":{"id":"219125","url":"http://api.openstreetmap.org/api/0.6/notes/219125","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2561834,12.1538256]},"properties":{"id":"279821","url":"http://api.openstreetmap.org/api/0.6/notes/279821","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2701609,12.1490626]},"properties":{"id":"142162","url":"http://api.openstreetmap.org/api/0.6/notes/142162","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.272433,12.1488473]},"properties":{"id":"180048","url":"http://api.openstreetmap.org/api/0.6/notes/180048","comments":null}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2407127,12.1343446]},"properties":{"id":"268299","url":"http://api.openstreetmap.org/api/0.6/notes/268299","comments":{"comment":[{"date":"2014-11-09 21:47:24 UTC","action":"opened","text":"Lst ","html":"<p>Lst </p>"},{"date":"2015-03-10 19:24:32 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"¿Qué?","html":"<p>¿Qué?</p>"}]}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2444805,12.1370745]},"properties":{"id":"37855","url":"http://api.openstreetmap.org/api/0.6/notes/37855","comments":{"comment":[{"date":"2013-09-06 20:18:24 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"opened","text":"Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..","html":"<p>Why is this node member of a bus route relation? .. Check all(?) bus routes for nodes that shouldn't be in the relations..</p>"},{"date":"2015-03-07 01:24:37 UTC","uid":"1299518","user":"mayorgatellez","user_url":"http://www.openstreetmap.org/user/mayorgatellez","action":"commented","text":"It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.","html":"<p>It might be a bus stop, because the node was created by an user who edited the relation. Maybe he forgot to add the tags.</p>"},{"date":"2015-03-10 17:49:01 UTC","action":"commented","text":"Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at & take care of those too.","html":"<p>Yes, it most likely is. .. But to which direction ? Or both? some educated(?) guess could be taken -- or just a tag added for starters. .. There are a number of other similar \"orphan\" nodes (that are part of a bus route relation) -- hence the note here to look at &amp; take care of those too.</p>"},{"date":"2015-03-10 18:03:17 UTC","uid":"24440","user":"jaakkoh","user_url":"http://www.openstreetmap.org/user/jaakkoh","action":"commented","text":"-Jaakko (above)","html":"<p>-Jaakko (above)</p>"}]}}}]}, {
+        onEachFeature: onEachFeature
+    }).addTo(map);
+
+    var bounds = layer.getBounds();
+    map.fitBounds(bounds, { padding: [ 50,50] });
+</script>
+
+
+<h3 id="total-notes">Total Notes</h3>
+<p>12</p>
+<h3 id="average-time-open">Average Time Open</h3>
+<p>281 days, 4 hours</p>
+<!-- Changeset Block -->
+<!-- Yes, we can use mustache templates! -->
+<div id="changeset-block" class="block">
+  <h1>Changesets</h1>
+  <h5 id="changesetCount"></h5>
+  <h5 id="userCount"></h5>
+
+
+  <ul id="user-list" class="overscroll">
+  </ul>
+
+  <div id="changesets-map">
+  </div>
+
+  <div id="user-changesets">
+    <h2 id="user-changesets-title"><em>select a user</em></h2>
+    <ul id="user-changesets-list" class="overscroll">
+    </ul>
+  </div>
+
+  <div id="changeset_slider" style="width: 90%; margin: 0 auto;">
+  </div>
+
+<p></div></p>
+<script class="jsonp" src="json/changesets_x_day.jsonp"></script>
+
+<script>
+$(document).ready(function(){
+
+  //Load the changesets
+  var parseDate = d3.time.format("%Y-%m-%d %X %Z").parse;
+
+  var first_entry = changesets_x_day[0]
+  var last_entry  = changesets_x_day[changesets_x_day.length-1]
+  var mid_point = Math.round((changesets_x_day.length/2))
+  var scale = Math.round(changesets_x_day.length/12)
+
+  //Parse the template:
+  var changesetViewTemplate = $('#changesetViewTemplate').html();
+  Mustache.parse(changesetViewTemplate);
+  // console.log(changesetViewTemplate)
+
+  //Add the map!
+  var changesetMap = L.map('changesets-map', {scrollWheelZoom: false}).setView([51.505, -0.09], 13);
+  changesetMap.on('focus', function() { changesetMap.scrollWheelZoom.enable(); });
+  // changesetMap.on('focusout', function() { changesetMap.scrollWheelZoom.disable(); });
+
+
+  // add an OpenStreetMap tile layer
+  L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(changesetMap);
+
+  var c = null
+  var highlighted = null
+
+  //Update the Changeset List
+  function showChangesetDetails(user, changesets){
+    $("#user-changesets-title").text(user)
+    var changesetList = $("#user-changesets-list")
+    changesetList.empty();
+    if (c != null){ changesetMap.removeLayer(c) }
+
+    var changesetsForMap = {type: "FeatureCollection", features:[]}
+
+    //This will be a layer of geojson objects
+    changesets.forEach(function(changeset){
+      changesetsForMap.features.push({type: "Feature", geometry: changeset.geometry, properties: changeset})
+      // console.log(changeset)
+      changeset.formatDate = function(){
+        return function(text, render) {
+          var time = new Date(render(text))
+          return time.toTimeString()+"<br>"+MONTHS[time.getMonth()] + " " + time.getDate() +", "+ time.getFullYear()
+        }
+      }
+      var li = $('<li/>')
+        .addClass('ui-menu-item')
+        .attr('role', 'menuitem')
+        .addClass('ui-all')
+        .addClass('changeset-details')
+        .html(Mustache.render(changesetViewTemplate, changeset))
+        .appendTo(changesetList)
+        .bind("click", function(){
+          if (highlighted != null){ changesetMap.removeLayer(highlighted) }
+          highlighted = L.geoJson(changeset.geometry,{
+            style:{
+              "color": "#004070",
+              "fillColor" : "#A60007",
+              "weight": 5,
+              "opacity": 1
+            }
+          })
+          highlighted.addTo(changesetMap)
+          changesetMap.fitBounds(highlighted.getBounds());
+        });
+    })
+    c = L.geoJson(changesetsForMap, {
+     onEachFeature: function (feature, layer) {
+         layer.bindPopup(feature.properties.comment);
+     }
+    })
+    c.addTo(changesetMap)
+    changesetMap.fitBounds(c.getBounds());
+  }
+
+  function updateUserList(min, max){
+    var userList = $("#user-list")
+    users = {}
+    changesetCount = 0
+    changesets_x_day.forEach(function(bin){
+      if (bin.objects.length > 0){
+        if ( (Date.parse(bin.start_date) > min) && (Date.parse(bin.end_date) < max) ){
+          bin.objects.forEach(function(changeset){
+            if (users[changeset.user] == undefined){ users[changeset.user] = [] }
+            users[changeset.user].push(changeset)
+            changesetCount++;
+          })
+        }
+      }
+    })
+    //Update Simple Stats:
+    $("#changesetCount").text(changesetCount + " Changesets");
+    $("#userCount").text(Object.keys(users).length + " Users");
+
+    //Iterate over unique users
+    userList.empty();
+    var usersToSort = []
+    Object.keys(users).forEach(function(username){
+      usersToSort.push({name: username, count: users[username].length})
+    })
+    _.sortByOrder(usersToSort, 'count', false).forEach(function(user){
+      var li = $('<li/>')
+        .addClass('ui-menu-item')
+        .attr('role', 'menuitem')
+        .appendTo(userList);
+      var aaa = $('<a/>')
+        .addClass('ui-all')
+        .text( user.count+" "+user.name)
+        .appendTo(li)
+        .bind("click", function(){
+          showChangesetDetails(user.name, users[user.name])
+        });
+    });
+  }
+
+  updateUserList(Date.parse(first_entry.start_date), Date.parse(last_entry.end_date))
+
+
+
+
+
+
+
+
+  //Date Slider & Selector for this Block
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+  $("#changeset_slider").dateRangeSlider({
+    bounds:{
+      min: Date.parse(first_entry.start_date),
+      max: Date.parse(last_entry.end_date)
+    },
+    defaultValues:{
+      min: Date.parse(first_entry.start_date),
+      max: Date.parse(last_entry.end_date)
+    },
+    formatter:function(val){
+      var days = val.getDate(),
+          month = val.getMonth(),
+          year = val.getFullYear();
+      return months[month] + " " + days +", "+ year;
+    },
+    scales: [{
+      first: function(value){ return value; },
+      end: function(value) {return value; },
+      next: function(value){
+        var next = new Date(value);
+        return new Date(next.setMonth(value.getMonth() + 1));
+      },
+      label: function(value){
+        return months[value.getMonth()];
+      },
+      format: function(tickContainer, tickStart, tickEnd){
+        tickContainer.addClass("myCustomClass");
+      }
+    }]
+  }).bind("valuesChanged", function(e, data){
+    // console.log("Something moved. min: " + data.values.min + " max: " + data.values.max);
+    updateUserList(data.values.min, data.values.max)
+  });
+})
+</script>
+
+</article>
+
+		</body>
+
+		<div id="footer" style="text-align: center; margin-top: 100px;">
+  <h5> Copyright 2015 - Information Retrieval in JavaScript </h5>
+</div>
+  <script>
+    function toggleCode() {
+      var pres = document.getElementsByTagName('pre');
+      for (i = 0; i < pres.length; i++) {
+      	if (pres[i].style.display == 'none') {
+      		pres[i].style.display = 'block'
+      		document.getElementById('CodeButton').innerText = 'Hide Code'
+      	}
+      	else {
+      		pres[i].style.display = 'none'
+      		document.getElementById('CodeButton').innerText = 'Show Code'
+      	}
+      }
+    }
+  </script>
+
+	</div>
+
+</html>

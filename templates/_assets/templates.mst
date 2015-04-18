@@ -7,7 +7,4 @@
   {{/tags}}
 
   {{^tags}}<b>No tags</b>{{/tags}}
-
-
-
 </script>

@@ -9,7 +9,6 @@
   <script src="{{ baseurl }}templates/_assets/js/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="{{ baseurl }}templates/_assets/css/jquery/jquery-ui.theme.min.css" />
 
-
   <!--TimeSlider-->
   <script src="{{ baseurl }}templates/_assets/js/jQDateRangeSlider-withRuler-min.js"></script>
   <link rel="stylesheet" href="{{ baseurl }}templates/_assets/css/iThing-min.css" />
@@ -17,7 +16,8 @@
 
   <!-- D3 -->
   <!-- <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
-  <script src="{{ baseurl }}templates/_assets/js/d3.min.js"></script>
+  <script src="{{ baseurl }}templates/_assets/js/d3/d3.min.js"></script>
+  <script src="{{ baseurl }}templates/_assets/js/d3/d3.legend.js"></script>
 
   <!-- Lodash-->
   <script src="{{ baseurl }}templates/_assets/js/lodash.min.js"></script>
@@ -25,8 +25,6 @@
   <!-- Front End Mustache -->
   <script src="{{ baseurl }}templates/_assets/js/mustache.min.js"></script>
 
-  <!-- Custom Functions-->
-  <script src="{{ baseurl }}templates/_assets/js/osmdown-base.js"></script>
 
   <!-- External Stylesheets-->
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> -->
@@ -40,10 +38,15 @@
   <link rel="stylesheet" href="{{ baseurl }}templates/_assets/leaflet-0.7.3/leaflet.css"/>
   <script src="{{ baseurl }}templates/_assets/leaflet-0.7.3/leaflet.js"></script>
 
-
   <!-- Custom Stylesheets (Always Last)-->
   <link rel="stylesheet" href="{{ baseurl }}templates/_assets/main.css">
 
+  <!-- Custom Functions-->
+  <script src="{{ baseurl }}templates/_assets/js/osmdown-base.js"></script>
+  <script src="{{ baseurl }}templates/_assets/js/scrolling-header.js"></script>
+
   <title> {{ title }} </title>
 </head>
+<!-- Load the Front End Templates here for Mustache -->
 {{{frontEndTemplates}}}
+<!-- End of Front End Templates -->

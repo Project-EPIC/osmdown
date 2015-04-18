@@ -83,11 +83,54 @@ pre {
   display: none;
 }
 
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
 .line {
   fill: none;
   stroke: steelblue;
   stroke-width: 1.5px;
 }
+
+.fatline{
+  fill: none;
+  stroke-width: 3px;
+}
+
+.line .hover{
+  stroke-width: 5px;
+}
+
+.multiline_0{
+  stroke: steelblue;
+} .multiline_1{
+  stroke: red;
+} .multiline_2{
+  stroke: brown;
+} .multiline_3{
+  stroke: crimson;
+} .multiline_4{
+  stroke: darkcyan;
+} .multiline_5{
+  stroke: darkgoldenrod;
+} .multiline_6{
+  stroke: rosybrown;
+} .multiline_7{
+  stroke: seagreen;
+} .multiline_8{
+  stroke: yellow;
+} .multiline_9{
+  stroke: turquoise;
+} .multiline_10{
+  stroke: tan; }
+
 
 .legend rect {
   fill:white;
