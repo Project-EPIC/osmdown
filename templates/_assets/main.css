@@ -1,43 +1,45 @@
 body{
   text-align: center;
-  background-color: #AABD00;
+  background-color: #D2B48C;
   padding: 0;
 }
 
 .wrapper{
   width: 95%;
   margin: 50px auto;
-  padding: 10px;
+  padding: 10px 30px 10px 10px;
   text-align: left;
-  border-left: 5px solid #A60007;
-  border-right: 5px solid #A60007;
-  background-color: #F6FAEF;
+  border-left: 2px solid #111;
+  border-right: 2px solid #111;
+  background-color: #FFFAFA;
 }
 
 #scrolling_header{
   position: fixed;
   top: 0;
   margin: 0 auto;
-  margin-left: -15px;
+  margin-left: -12px;
   text-align: left;
-  border-left: 5px solid #A60007;
-  border-right: 5px solid #A60007;
+  border-left: 2px solid #111;
+  border-right: 2px solid #111;
+  border-top: 1px solid #222;
   z-index: 9999;
   width: 95%;
-  background-color: #F6FAEF;
-  border-bottom: 1px solid #A60007;
+  height: 50px;
+  background-color: #FDFDFD;
+  border-bottom: 1px solid #111;
   -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.39);
   -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.39);
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.39);
 }
 
 h1.title{
-  margin: 0;
+  margin: 0px 10px;
+  padding: 5px 0px;
   display: inline-block;
 }
 
 h1.title:hover{
-  margin: 0;
   display: inline-block;
   cursor: pointer;
 }
@@ -48,7 +50,7 @@ pre {
 
 #CodeButton {
   float: right;
-  margin: -20px 20px 0px 0px;
+  margin: -40px 20px 0px 0px;
 }
 
 #scrolling_nav{
@@ -59,17 +61,37 @@ pre {
 }
 
 .scrolling-nav-item{
+  vertical-align: text-middle;
   display: inline-block;
-  padding: 0px 20px;
+  padding: 10px 10px;
+  margin: 0px;
   font-size: 18px;
 }
 
 .scrolling-nav-item:hover{
   cursor: pointer;
-  background-color: #D2B401;
+  color: #4169E1;
 }
 
 .block{
+  border: 1px dashed #DDD;
+  margin: 0px 0px 10px 0px;
+  padding: 0px;
+}
+
+.block ul{
+  margin: 0;
+}
+
+.block h2{
+  margin: 0;
+  padding: 15px;
+}
+
+h5.subInfo{
+  margin: 10px;
+  padding: 0;
+  display: inline-block;
 }
 
 .axis path,
