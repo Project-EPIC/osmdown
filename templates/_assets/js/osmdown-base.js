@@ -30,3 +30,10 @@ var COLORS = d3.scale.category20()
 
 
 //Lets define some AJAX loaders here?
+
+
+$(document).ready(function(){
+  $('.tablesorter').each(function(e, item){
+    $(item).tablesorter();
+  });
+});
