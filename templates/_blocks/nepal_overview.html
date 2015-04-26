@@ -1,0 +1,54 @@
+<div id='overviewmap' style='height:300px; width:450px; float:left'></div>
+
+<div style='float:left; padding:0px 30px; width:50%;'>
+  <p>On April 25th, a 7.8 magnitude earthquake stuck Nepal approximately 50 miles northwest of Kathmandu.  With the coordination of [Kathmandu Living Labs](http://kathmandulivinglabs.org/), a Nepali civic technology group, and the [Humanitarian OpenStreetMap Team](http://hotosm.org), a global volunteer effort to map roads and buildings in the affected area is under way.  OpenStreetMap data is being used by the American Red Cross, the World Bank, and other organizations to support response and recovery activities in Nepal. </p>
+  <p>Read more: [http://wiki.openstreetmap.org/wiki/2015_Nepal_earthquake](http://wiki.openstreetmap.org/wiki/2015_Nepal_earthquake)</p>
+  <p>This site provides basic statistics describing the work of OSM volunteers in the response to this disaster. It may not account for 100% of the edits occurring at this time.</p>
+</div>
+
+<br clear='both' />
+
+<script>
+  var data = {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "properties": {
+        "description": "Epicenter of 7.8 Magnitude Earthquake on April 25"
+        },
+       "geometry": {
+         "type": "Point",
+         "coordinates": [
+           85.7266,
+           27.732
+         ]
+       }
+     }
+    ] 
+  }
+
+  function popupFormatter (popupData) {
+    var HTML = '<p>' + popupData.description + '</p>';
+    return HTML;
+  }
+
+  function onEachFeature(feature, layer) {
+    if (feature.properties && feature.properties.description) {
+      layer.bindPopup(popupFormatter(feature.properties),{ maxHeight:200 });
+    }
+  }
+
+  var map = L.map('overviewmap');
+  L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: '18', id: 'examples.map-i875mjb7'}).addTo(map);
+
+  var layer = L.geoJson(data)
+
+  L.geoJson(data, {
+    onEachFeature: onEachFeature
+  }).addTo(map);
+
+  var bounds = layer.getBounds();
+  map.fitBounds(bounds, { padding: [ 50,50] });
+  map.setZoom('6')
+</script>

@@ -1,8 +1,12 @@
-<div id='{{ name }}' style='height:{{ height }}; width:{{ width }};'></div>
+<div id='{{ name }}' style='height:{{ height }}; width:{{ width }}; {{ containerStyle }}'></div>
 
 <script>
 	function popupFormatter (popupStyle,popupData) {
 		switch (popupStyle) {
+			case 'basic':
+				console.log(popupData);
+				var HTML = '<p>' + popupData.{{popupContent}} + '</p>';
+			return HTML;
 			case 'comments':
 				// console.log(popupData);
 				var HTML = '<strong>Comments</strong><br />';
@@ -45,4 +49,7 @@
 
 	var bounds = layer.getBounds();
 	map.fitBounds(bounds, { padding: [ {{ padding }},{{ padding }}] });
+		if ({{zoom}}) {
+		map.setZoom({{zoom}})
+	}
 </script>
