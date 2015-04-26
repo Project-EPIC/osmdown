@@ -2,7 +2,6 @@
 //============
 //Helper functions and formatters for all front end display
 //
-//
 
 //Define global variables
 var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -27,13 +26,3 @@ var dateLine = d3.svg.line()
   .y(function(d) { return y(d.value)})
 
 var COLORS = d3.scale.category20()
-
-
-//Lets define some AJAX loaders here?
-
-
-$(document).ready(function(){
-  $('.tablesorter').each(function(e, item){
-    $(item).tablesorter();
-  });
-});

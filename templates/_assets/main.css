@@ -94,35 +94,23 @@ h5.subInfo{
   padding: 0;
   display: inline-block;
 }
-
+/*
 .markdown-body table{
   width: auto;
-}
+} */
 
-thead th{
+/* thead th{
   background-color: lightblue;
 }
-
-thead .headerSortDown{
+ */
+/* thead .headerSortDown{
   background-color: lightyellow;
 }
 
 thead .headerSortUp{
   background-color: lightgreen;
 }
-
-tbody td, thead th {
-    width: 200px;
-}
-
-tbody, thead { display: block; }
-
-tbody {
-    height: 300px;
-    overflow-y: auto;    /* Trigger vertical scroll    */
-    overflow-x: hidden;  /* Hide the horizontal scroll */
-}
-
+ */
 
 
 .axis path,
