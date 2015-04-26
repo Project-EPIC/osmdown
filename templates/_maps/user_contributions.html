@@ -1,0 +1,19 @@
+<div id='{{ name }}' style='height:{{ height }}; width:{{ width }};'></div>
+
+<script>
+	var map = L.map('{{ name }}');
+	// L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: {{ maxzoom }}, id: '{{ id }}'}).addTo(map);
+  var changesets = null
+
+  function showUserEdits(userName){
+    if (changesets!=null){map.removeLayer(changesets)}
+    $.getJSON('/nepal/json/user_list_with_geometry/'+userName+'.json', function(data, err){
+      var changesets = L.geoJson(data).addTo(map)
+      map.fitBounds(changesets);
+    })
+  }
+
+  // var changesets = L.geoJson('/nepal/json/user_list_with_geometry/Anonymous_Joker.json').addTo(map)
+
+
+</script>
