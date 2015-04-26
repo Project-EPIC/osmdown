@@ -94,6 +94,10 @@ h5.subInfo{
   display: inline-block;
 }
 
+.markdown-body table{
+  width: auto;
+}
+
 thead th{
   background-color: lightblue;
 }

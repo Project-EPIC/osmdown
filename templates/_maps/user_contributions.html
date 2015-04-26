@@ -2,9 +2,8 @@
 
 <script>
 	var map = L.map('{{ name }}');
-	// L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: {{ maxzoom }}, id: '{{ id }}'}).addTo(map);
+  L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', { maxZoom: {{ maxzoom }}, id: '{{ id }}'}).addTo(map);
   var changesets = null
-
   function showUserEdits(userName){
     if (changesets!=null){map.removeLayer(changesets)}
     $.getJSON('/nepal/json/user_list_with_geometry/'+userName+'.json', function(data, err){
