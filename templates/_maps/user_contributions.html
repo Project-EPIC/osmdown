@@ -32,7 +32,7 @@
 		})
 
 		usersToAdd.forEach(function(userName){
-			$.getJSON('/nepal/json/user_list_with_geometry/'+userName+'.json', function(data, err){
+			$.getJSON('http://ec2-54-242-150-21.compute-1.amazonaws.com/nepal/user_list_with_geometry/'+userName+'.json', function(data, err){
 	      thisLayer = L.geoJson(data,
 					{
 				    onEachFeature: function(feature, layer){
