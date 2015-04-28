@@ -4,11 +4,9 @@
 	function popupFormatter (popupStyle,popupData) {
 		switch (popupStyle) {
 			case 'basic':
-				console.log(popupData);
-				var HTML = '<p>' + popupData.{{popupContent}} + '</p>';
-			return HTML;
+				var HTML = '<p>' + popupData.{{popupData}} + '</p>';
+				return HTML;
 			case 'comments':
-				// console.log(popupData);
 				var HTML = '<strong>Comments</strong><br />';
 				for (i=0; i < popupData.comments.comment.length; i++) {
 					if (popupData.comments.comment[i].date) {
