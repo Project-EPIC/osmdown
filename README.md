@@ -4,6 +4,8 @@ An OSM Markdown Parser for EPIC-OSM
 
 Given an osmdown file, this package will generate an easy to navigate and analyze html document.
 
+osmdown is built on the [vizdown engine](http://github.com/doubleshow/vizdown)
+
 ### Examples
 - [Example Rendering - Boulder, CO](http://osm.townsendjennings.com/example/)
 

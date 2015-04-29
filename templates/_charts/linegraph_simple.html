@@ -24,8 +24,9 @@ var dateLine = d3.svg.line()
   .y(function(d) { return y(d.value)})
 
 //Call the graphic
+var width = {{width}}
 var {{id}}_dateChart = d3.select("#{{ id }}_date_chart")
-   .attr("width", width + margin.left + margin.right)
+   .attr("width", 1200 + margin.left + margin.right)
    .attr("height", height + margin.top + margin.bottom)
    .append("g")
    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
