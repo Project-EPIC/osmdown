@@ -2,7 +2,7 @@
 
   <svg id="{{ id }}_date_chart" class="date-chart"></svg>
 
-  <div id="{{ id }}_date_slider" style="width:90%; margin: 20 auto;"></div>
+  <div id="{{ id }}_date_slider" style="width:90%; margin: 20px auto;"></div>
 
 </div>
 
@@ -51,10 +51,6 @@ y.domain(d3.extent({{ id }}_toPlot[0].data, function(d) { return d.value; }));
   .attr("y", 6)
   .attr("dy", ".71em")
   .style("text-anchor", "end")
-
-
-
-
 
 
 $("#{{ id }}_date_slider").dateRangeSlider({
