@@ -32,7 +32,7 @@
 		})
 
 		usersToAdd.forEach(function(userName){
-			$.getJSON(options.path+'/user_list_with_geometry/'+userName+'.json', function(data, err){
+			$.getJSON('{{{path}}}'+'/json/all_contributors_with_geometry/'+userName+'.json', function(data, err){
 	      thisLayer = L.geoJson(data,
 					{
 				    onEachFeature: function(feature, layer){
