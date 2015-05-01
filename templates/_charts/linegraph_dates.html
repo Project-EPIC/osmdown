@@ -63,9 +63,9 @@ $("#{{ id }}_date_slider").dateRangeSlider({
     max: new Date()
   },
   formatter:function(val){
-    var days = val.getDate(),
-        month = val.getMonth(),
-        hours = val.getHours()
+    var days = val.getUTCDate(),
+        month = val.getUTCMonth(),
+        hours = val.getUTCHours()
     if (hours<10){hours = '0'+hours}
     return MONTHS[month] + " " + days +", "+hours+":00 UTC";
   },
