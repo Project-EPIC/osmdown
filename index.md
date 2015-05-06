@@ -61,23 +61,29 @@ An ```osmdown``` document starts with YAML frontmatter denoted by ```---```
 
     A variety of pre-coded blocks exist:
 
+{% raw %}
     {{ osmviz.block('summary', {title: 'Boulder Sample'}) }}
+{% endraw %}
+
 
     Specific data files can be loaded
     ```
     var data = osmdata('./test/json/median_changesets_per_mapper.json')
     ```
-
+{% raw %}
     {{ osmviz.block('changesets', {title: 'Boulder Sample'}) }}
-
+{% endraw %}
 
 
 
 ## Available Prefabricated Blocks
 
 #### Summary Block
+{% raw %}
     {{osmviz.block('summary', options)}}
-
+{% endraw %}
 
 #### Changeset Block
+{% raw %}
     {{osmviz.block('summary', options)}}
+{% endraw %}
