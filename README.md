@@ -1,9 +1,5 @@
----
-layout: splash
----
-
-##[See the Github Repository](http://github.com/project-epic/osmdown)
-
+OpenStreetMap Markdown
+======================
 An OSM Markdown Parser for EPIC-OSM
 
 Given an osmdown file, this package will generate an easy to navigate and analyze html document.
