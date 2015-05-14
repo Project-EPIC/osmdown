@@ -186,6 +186,14 @@ thead .headerSortUp{
   stroke-width: 0;
 }
 
+.link {
+  stroke: #ccc;
+}
+
+.node text {
+  font: 9px helvetica;
+}
+
 .left{
   width: 30%;
   height: 400px;
