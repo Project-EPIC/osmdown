@@ -194,6 +194,16 @@ thead .headerSortUp{
   font: 9px helvetica;
 }
 
+.network-list-item{
+  color: blue;
+  display: inline-block;
+  padding: 10px;
+}
+
+.network-list-item:hover{
+  text-decoration: underline;
+}
+
 .left{
   width: 30%;
   height: 400px;
