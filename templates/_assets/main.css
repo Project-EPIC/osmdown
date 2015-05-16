@@ -195,13 +195,11 @@ thead .headerSortUp{
 }
 
 .network-list-item{
-  color: blue;
-  display: inline-block;
-  padding: 10px;
 }
 
 .network-list-item:hover{
-  text-decoration: underline;
+  background-color: lightgrey;
+  cursor: pointer;
 }
 
 .left{
